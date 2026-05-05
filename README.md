@@ -32,9 +32,23 @@ knowing when and why to use it.
 - API versioning (v1)
 - API documentation via Scalar UI at `/scalar/v1`
 
+### Internationalization
+
+- DB-backed translations stored in the `localization` schema
+- Supported cultures: `en`, `fr`, `de`, `fr-CH`, `de-CH`
+- Culture resolution per request: authenticated users resolved from their stored
+  preference, unauthenticated users resolved from the `Accept-Language` header,
+  fallback to `en`
+- Preferred culture cached per user with a 30-minute sliding expiry
+- Confirmation emails delivered in the user's resolved language
+- Translations updatable without redeployment — edit a row in the DB and call
+  `POST /api/v1/admin/translations/refresh` to reload the cache immediately
+- `PUT /api/v1/auth/culture` — authenticated users can set their preferred language
+- `POST /api/v1/admin/translations/refresh` — Admin only, reloads translation cache
+
 ### Tests
 
-- 29 unit tests for `AuthService` covering all 7 flows
+- 33 unit tests for `AuthService` covering all 8 flows
 - `RegisterTests` — email conflict, user creation failure, role assignment failure, email delivery failure, success
 - `LoginTests` — user not found, account deactivated, email not confirmed, invalid password, success
 - `RefreshTests` — empty token, token not found, revoked without replacement, expired token, reuse detected (full family revocation), user not found, success
@@ -42,6 +56,7 @@ knowing when and why to use it.
 - `LogoutAllTests` — all sessions revoked for user
 - `ConfirmEmailTests` — user not found, already confirmed, invalid token, success
 - `ResendConfirmationEmailTests` — user not found (silent), already confirmed (silent), email delivery failure, success
+- `UpdatePreferredCultureTests` — unsupported culture, user not found, valid base culture, valid regional culture
 - xUnit, NSubstitute, FluentAssertions
 
 ## Tech Stack
@@ -69,6 +84,11 @@ enforces the Dependency Inversion Principle and makes the service
 testable without a real database, even though it is overkill at this
 scale. It signals the module is ready for microservice extraction.
 
+`IMessageLocalizer` and `ILocalizerCache` are separated into two interfaces
+following the Interface Segregation Principle. Email service depends only on
+`IMessageLocalizer`. Startup warmup and admin refresh depend only on
+`ILocalizerCache`. One implementation (`DbMessageLocalizer`) satisfies both.
+
 ## Getting Started
 
 ### Prerequisites
@@ -89,10 +109,16 @@ Seq will be available at `http://localhost:5341`.
 
 ### Apply migrations
 
-From the solution root:
+From the solution root, apply Identity migrations:
 
 ```bash
 dotnet ef database update --project src/MedCore.Modules.Identity/MedCore.Modules.Identity.csproj --startup-project src/MedCore.Api/MedCore.Api.csproj
+```
+
+Apply Localization migrations:
+
+```bash
+dotnet ef database update --project src/MedCore.Infrastructure/MedCore.Infrastructure.csproj --startup-project src/MedCore.Api/MedCore.Api.csproj --context LocalizationDbContext
 ```
 
 ### Run the API
@@ -105,6 +131,9 @@ dotnet run --project src/MedCore.Api/MedCore.Api.csproj --launch-profile https
 
 The API will be available at `https://localhost:7212`.
 
+On startup, the app seeds roles and translations automatically, then warms up
+the translation cache before accepting requests.
+
 ### Run the tests
 
 From the solution root:
@@ -113,7 +142,7 @@ From the solution root:
 dotnet test
 ```
 
-Runs 29 unit tests across all 7 `AuthService` flows.
+Runs 33 unit tests across all 8 `AuthService` flows.
 
 ### API docs
 
@@ -127,7 +156,7 @@ Logs are also written to rolling daily JSON files under `logs/` in the project r
 
 ### Try the API with MedCore.http
 
-The repo includes `src/MedCore.Api/MedCore.http` with all auth endpoints
+The repo includes `src/MedCore.Api/MedCore.http` with all endpoints
 pre-configured and ready to run. It works in:
 
 - **JetBrains Rider** — built-in HTTP client, no setup needed
@@ -143,10 +172,17 @@ Credentials in `appsettings.json` are intentional for reviewer convenience.
 To use your own Ethereal account, create a free one at https://ethereal.email
 and override the `Email` section in `appsettings.Development.json`.
 
+### Updating a translation without redeployment
+
+1. Connect to the database and update the relevant row in `localization.translations`
+2. Call `POST /api/v1/admin/translations/refresh` with an Admin Bearer token
+3. The cache is cleared and reloaded immediately — no restart required
+
 ## Status
 
-Actively in development. Identity module is complete with unit tests in place.
-Patients, Doctors, and Appointments modules coming next.
+Actively in development. Identity module and internationalization foundation
+are complete with unit tests in place. Patients, Doctors, and Appointments
+modules coming next.
 
 ## About the Author
 
