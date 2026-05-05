@@ -34,7 +34,7 @@ knowing when and why to use it.
 
 ### Tests
 
-- Unit tests for `AuthService` covering all 7 flows
+- 29 unit tests for `AuthService` covering all 7 flows
 - `RegisterTests` — email conflict, user creation failure, role assignment failure, email delivery failure, success
 - `LoginTests` — user not found, account deactivated, email not confirmed, invalid password, success
 - `RefreshTests` — empty token, token not found, revoked without replacement, expired token, reuse detected (full family revocation), user not found, success
@@ -52,6 +52,7 @@ knowing when and why to use it.
 - ASP.NET Core Identity
 - Serilog
 - MailKit
+- Seq (structured log viewer, Docker)
 
 ## Architecture
 
@@ -74,22 +75,35 @@ scale. It signals the module is ready for microservice extraction.
 
 - .NET 10 SDK
 - Docker Desktop
+- dotnet-ef CLI (`dotnet tool install --global dotnet-ef`)
+- Trusted HTTPS dev certificate (`dotnet dev-certs https --trust`)
 
-### Run the database
+### Run the services
 
 ```bash
 docker-compose up -d
 ```
 
-PostgreSQL will be available at `localhost:5432`.
+PostgreSQL will be available at `localhost:5432`.  
+Seq will be available at `http://localhost:5341`.
 
 ### Apply migrations
 
 From the solution root:
 
 ```bash
-dotnet ef database update --project src/MedCore.Modules.Identity/MedCore.Modules.Identity.csproj
+dotnet ef database update --project src/MedCore.Modules.Identity/MedCore.Modules.Identity.csproj --startup-project src/MedCore.Api/MedCore.Api.csproj
 ```
+
+### Run the API
+
+From the solution root:
+
+```bash
+dotnet run --project src/MedCore.Api/MedCore.Api.csproj --launch-profile https
+```
+
+The API will be available at `https://localhost:7212`.
 
 ### Run the tests
 
@@ -99,21 +113,15 @@ From the solution root:
 dotnet test
 ```
 
-### Email (development)
-
-The app uses Ethereal Email for development. No real emails are delivered.
-Credentials in `appsettings.json` are intentional for reviewer convenience.
-To use your own Ethereal account, create a free one at https://ethereal.email
-and override the `Email` section in `appsettings.Development.json`.
+Runs 29 unit tests across all 7 `AuthService` flows.
 
 ### API docs
 
-Start the app in Development mode and visit: https://localhost:7212/scalar/v1
+With the API running, visit: https://localhost:7212/scalar/v1
 
 ### Structured logs (Seq)
 
-Seq runs as a Docker service alongside PostgreSQL. Once the containers are up,
-visit http://localhost:5341 to browse and query structured logs in real time.
+Visit `http://localhost:5341` to browse and query structured logs in real time.
 
 Logs are also written to rolling daily JSON files under `logs/` in the project root.
 
@@ -126,8 +134,14 @@ pre-configured and ready to run. It works in:
 - **Visual Studio** — built-in HTTP client, no setup needed
 - **VS Code** — install the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) extension by Huachao Mao
 
-Open the file, set `@AccessToken` to a token from a login response, and run
-any request directly from your editor.
+Open the file, start the API first, then set `@AccessToken` to a token from a login or register response and run any request directly from your editor.
+
+### Email (development)
+
+The app uses Ethereal Email for development. No real emails are delivered.
+Credentials in `appsettings.json` are intentional for reviewer convenience.
+To use your own Ethereal account, create a free one at https://ethereal.email
+and override the `Email` section in `appsettings.Development.json`.
 
 ## Status
 
