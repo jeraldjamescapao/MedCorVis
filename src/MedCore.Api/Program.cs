@@ -39,6 +39,8 @@ try
     var app = builder.Build();
     
     await app.SeedIdentityAsync();
+    await app.SeedTranslationsAsync();
+    await app.WarmUpLocalizerAsync();
     
     if (app.Environment.IsDevelopment())
     {
@@ -55,6 +57,7 @@ try
     app.UseMiddleware<ExceptionHandlingMiddleware>();
     
     app.UseAuthentication();
+    app.UseMiddleware<CultureMiddleware>(); 
     app.UseAuthorization();
 
     var welcomeText = await File.ReadAllTextAsync("welcome.txt");

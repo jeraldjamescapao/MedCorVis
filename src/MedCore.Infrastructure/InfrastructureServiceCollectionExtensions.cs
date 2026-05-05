@@ -1,10 +1,13 @@
 namespace MedCore.Infrastructure;
 
+using MedCore.Common.Localization;
+using MedCore.Common.Services;
+using MedCore.Common.Services.Email;
+using MedCore.Infrastructure.Localization;
+using MedCore.Infrastructure.Email;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MedCore.Common.Services.Email;
-using MedCore.Infrastructure.Email;
-
 
 public static class InfrastructureServiceCollectionExtensions
 {
@@ -12,6 +15,26 @@ public static class InfrastructureServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        var connectionString = configuration.GetConnectionString("PostgreSqlConnection") 
+            ?? throw new InvalidOperationException("Database connection string is not configured.");
+
+        services.AddDbContext<LocalizationDbContext>(options =>
+            options
+                .UseNpgsql(connectionString,
+                    o => o.MigrationsAssembly("MedCore.Infrastructure"))
+                .UseSnakeCaseNamingConvention());
+
+        services.AddMemoryCache();
+
+        services.AddScoped<ITranslationRepository, TranslationRepository>();
+        services.AddScoped<ICurrentCultureService, CurrentCultureService>();
+
+        services.AddSingleton<DbMessageLocalizer>();
+        services.AddSingleton<IMessageLocalizer>(sp =>
+            sp.GetRequiredService<DbMessageLocalizer>());
+        services.AddSingleton<ILocalizerCache>(sp =>
+            sp.GetRequiredService<DbMessageLocalizer>());
+        
         services.AddOptions<EmailSettings>()
             .BindConfiguration(EmailSettings.SectionName)
             .ValidateDataAnnotations()

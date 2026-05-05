@@ -10,6 +10,7 @@ public sealed class ApplicationUser : IdentityUser<Guid>, IAuditableEntity
     public string FirstName { get; private set; } = null!;
     public string LastName { get; private set; } = null!;
     public DateOnly BirthDate { get; private set; }
+    public string? PreferredCulture { get; private set; }
     public bool IsActive { get; private set; } = true;
     
     public DateTimeOffset CreatedAtUtc { get; private set; }
