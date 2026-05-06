@@ -1,6 +1,6 @@
 namespace MedCore.Infrastructure.Localization;
 
-using MedCore.Common.Http;
+using MedCore.Common.Caching;
 using MedCore.Common.Localization;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;

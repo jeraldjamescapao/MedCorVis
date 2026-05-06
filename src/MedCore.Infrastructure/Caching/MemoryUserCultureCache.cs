@@ -1,7 +1,6 @@
 namespace MedCore.Infrastructure.Caching;
 
 using MedCore.Common.Caching;
-using MedCore.Common.Http;
 using Microsoft.Extensions.Caching.Memory;
 
 internal sealed class MemoryUserCultureCache : IUserCultureCache

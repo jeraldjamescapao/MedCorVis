@@ -1,4 +1,4 @@
-namespace MedCore.Common.Http;
+namespace MedCore.Common.Caching;
 
 public static class CacheKeys
 {

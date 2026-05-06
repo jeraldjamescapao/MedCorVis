@@ -1,6 +1,6 @@
 namespace MedCore.Api.Middleware;
 
-using MedCore.Common.Http;
+using MedCore.Common.Caching;
 using MedCore.Common.Localization;
 using MedCore.Common.Services;
 using MedCore.Modules.Identity.Domain.Users;
