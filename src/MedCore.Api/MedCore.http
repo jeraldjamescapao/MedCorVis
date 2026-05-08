@@ -85,7 +85,7 @@ Authorization: Bearer {{AccessToken}}
 # ─────────────────────────────────────────
 # Auth — Confirm Email
 # Paste the userId and token from the confirmation email link here.
-# Returns: 200 on success.
+# Returns: 204 No Content on success.
 # ─────────────────────────────────────────
 
 GET {{MedCore_HostAddress}}/api/v1/auth/confirm-email?userId=00000000-0000-0000-0000-000000000000&token=PASTE_TOKEN_HERE
@@ -95,7 +95,7 @@ GET {{MedCore_HostAddress}}/api/v1/auth/confirm-email?userId=00000000-0000-0000-
 # ─────────────────────────────────────────
 # Auth — Resend Confirmation Email
 # Silently succeeds even if the email is unknown or already confirmed (anti-enumeration).
-# Returns: 200.
+# Returns: 204 No Content.
 # ─────────────────────────────────────────
 
 POST {{MedCore_HostAddress}}/api/v1/auth/resend-confirmation-email

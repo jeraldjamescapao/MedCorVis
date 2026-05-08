@@ -96,7 +96,9 @@ public sealed class AuthController : BaseApiController
         CancellationToken ct)
     {
         var result = await _authService.ConfirmEmailAsync(userId, token, ct);
-        return ToActionResult(result);
+        if (result.IsFailure) return ToActionResult(result);
+        
+        return NoContent();
     }
 
     [HttpPost("resend-confirmation-email")]
@@ -105,7 +107,9 @@ public sealed class AuthController : BaseApiController
         CancellationToken ct)
     {
         var result = await _authService.ResendConfirmationEmailAsync(request.Email, ct);
-        return ToActionResult(result);
+        if (result.IsFailure) return ToActionResult(result);
+
+        return NoContent();
     }
     
     private void AppendRefreshTokenCookie(string rawRefreshToken)

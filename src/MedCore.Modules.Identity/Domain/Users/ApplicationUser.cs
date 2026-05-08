@@ -81,37 +81,6 @@ public sealed class ApplicationUser : IdentityUser<Guid>, IAuditableEntity
             createdBy,
             preferredCulture);
     }
-    
-    public void UpdateName(string firstName, string lastName, string modifiedBy)
-    {
-        if (string.IsNullOrWhiteSpace(firstName))
-            throw new DomainException("DOMAIN_USER_INVALID_FIRST_NAME", "FirstName is required.");
-        if (string.IsNullOrWhiteSpace(lastName))
-            throw new DomainException("DOMAIN_USER_INVALID_LAST_NAME", "LastName is required.");
-        if (string.IsNullOrWhiteSpace(modifiedBy))
-            throw new DomainException("DOMAIN_USER_INVALID_MODIFIED_BY", "ModifiedBy is required.");       
-        
-        if (firstName == FirstName && lastName == LastName) return;
-        
-        FirstName = firstName.Trim();
-        LastName = lastName.Trim();
-        ModifiedAtUtc = DateTimeOffset.UtcNow;
-        ModifiedBy = modifiedBy;
-    }
-    
-    public void UpdateBirthDate(DateOnly birthDate, string modifiedBy)
-    {
-        if (birthDate > DateOnly.FromDateTime(DateTime.UtcNow))
-            throw new DomainException("DOMAIN_USER_INVALID_BIRTH_DATE", "BirthDate cannot be in the future.");
-        if (string.IsNullOrWhiteSpace(modifiedBy))
-            throw new DomainException("DOMAIN_USER_INVALID_MODIFIED_BY", "ModifiedBy is required."); 
-        
-        if (birthDate == BirthDate) return;
-        
-        BirthDate = birthDate;
-        ModifiedAtUtc = DateTimeOffset.UtcNow;   
-        ModifiedBy = modifiedBy;
-    }
 
     public void UpdateProfile(
         string firstName, 
