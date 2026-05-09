@@ -37,42 +37,66 @@ internal sealed class IdentityEmailService : IIdentityEmailService
             $"{_frontendSettings.NormalizedBaseUrl}{_identityTokenSettings.NormalizedEmailConfirmationPath}" +
             $"?userId={user.Id}&token={encodedToken}";
         
+        var translations = new ConfirmationEmailTranslations(
+            Subject: _localizer.Get(TranslationKeys.EmailConfirmation.Subject, culture),
+            Greeting: string.Format(_localizer.Get(TranslationKeys.EmailConfirmation.Greeting, culture), 
+                user.FullName),
+            Instruction: _localizer.Get(TranslationKeys.EmailConfirmation.Instruction, culture),
+            LinkLabel: _localizer.Get(TranslationKeys.EmailConfirmation.LinkLabel, culture),
+            Expiry: string.Format(_localizer.Get(TranslationKeys.EmailConfirmation.Expiry, culture), 
+                _identityTokenSettings.EmailConfirmationExpirationInHours),
+            Ignore: _localizer.Get(TranslationKeys.EmailConfirmation.Ignore, culture),
+            Closing: _localizer.Get(TranslationKeys.EmailConfirmation.Closing, culture),
+            AppName: _localizer.Get(TranslationKeys.AppGeneral.Name, culture));
+        
         var message = new EmailMessage(
             To: user.Email!,
-            Subject: _localizer.Get("email.confirmation.subject", culture),
-            HtmlBody: BuildHtmlBody(user.FullName, confirmationLink, culture),
-            PlainTextBody: BuildPlainTextBody(user.FullName, confirmationLink, culture));
+            Subject: translations.Subject,
+            HtmlBody: BuildHtmlBody(confirmationLink, translations),
+            PlainTextBody: BuildPlainTextBody(confirmationLink, translations));
 
         await _emailService.SendAsync(message, ct);
     }
 
-    private string BuildHtmlBody(string fullName, string confirmationLink, string culture)
+    private static string BuildHtmlBody(string confirmationLink, ConfirmationEmailTranslations translations)
     {
-        var hours = _identityTokenSettings.EmailConfirmationExpirationInHours;
-        
         return $"""
-                <p>{string.Format(_localizer.Get("email.confirmation.greeting", culture), fullName)}</p>
-                <p>{_localizer.Get("email.confirmation.instruction", culture)}</p>
-                <p><a href="{confirmationLink}">{_localizer.Get("email.confirmation.link_label", culture)}</a></p>
-                <p>{string.Format(_localizer.Get("email.confirmation.expiry", culture), hours)}</p>
-                <p>{_localizer.Get("email.confirmation.ignore", culture)}</p>
+                <p>{translations.Greeting}</p>
+                <p>{translations.Instruction}</p>
+                <p><a href="{confirmationLink}">{translations.LinkLabel}</a></p>
+                <p>{translations.Expiry}</p>
+                <p>{translations.Ignore}</p>
+                <p>{translations.Closing}</p>
+                <p>{translations.AppName}</p>
                 """;
     }
 
-    private string BuildPlainTextBody(string fullName, string confirmationLink, string culture)
+    private static string BuildPlainTextBody(string confirmationLink, ConfirmationEmailTranslations translations)
     {
-        var hours = _identityTokenSettings.EmailConfirmationExpirationInHours;
-        
         return $"""
-                {string.Format(_localizer.Get("email.confirmation.greeting", culture), fullName)}
+                {translations.Greeting}
 
-                {_localizer.Get("email.confirmation.instruction", culture)}
+                {translations.Instruction}
 
                 {confirmationLink}
 
-                {string.Format(_localizer.Get("email.confirmation.expiry", culture), hours)}
+                {translations.Expiry}
 
-                {_localizer.Get("email.confirmation.ignore", culture)}
+                {translations.Ignore}
+                
+                {translations.Closing}
+                
+                {translations.AppName}
                 """;
     }
+    
+    private sealed record ConfirmationEmailTranslations(
+        string Subject,
+        string Greeting,
+        string Instruction,
+        string LinkLabel,
+        string Expiry,
+        string Ignore,
+        string Closing,
+        string AppName);
 }

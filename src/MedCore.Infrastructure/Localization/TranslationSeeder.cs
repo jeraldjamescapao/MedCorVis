@@ -9,34 +9,39 @@ internal static class TranslationSeeder
     // Regional cultures (fr-CH, de-CH) are not seeded explicitly.
     // DbMessageLocalizer resolves them via the fallback chain: fr-CH → fr → en.
     // To override a regional culture, add an entry here with the specific culture key.
-    private static readonly Dictionary<string, Dictionary<string, string>> Seeds = new()
+    private static readonly Dictionary<string, Dictionary<string, string>> Seeds 
+        = new Dictionary<string, Dictionary<string, string>>
     {
         [SupportedCultures.English] = new()
         {
-            ["email.confirmation.subject"]     = "Confirm your email address",
-            ["email.confirmation.greeting"]    = "Hi {0},",
-            ["email.confirmation.instruction"] = "Thanks for registering. Please confirm your email address by clicking the link below.",
-            ["email.confirmation.link_label"]  = "Confirm Email Address",
-            ["email.confirmation.expiry"]      = "This link expires in {0} hours.",
-            ["email.confirmation.ignore"]      = "If you did not create an account, you can safely ignore this email."
+            [TranslationKeys.AppGeneral.Name] = "MedCore by Jerald James Capao",
+            [TranslationKeys.EmailConfirmation.Subject]     = "Confirm your email address",
+            [TranslationKeys.EmailConfirmation.Greeting]    = "Hi {0},",
+            [TranslationKeys.EmailConfirmation.Instruction] = "Welcome! To activate your account, please confirm your email address by clicking the link below.",
+            [TranslationKeys.EmailConfirmation.LinkLabel]   = "Confirm Email Address",
+            [TranslationKeys.EmailConfirmation.Expiry]      = "This link expires in {0} hours.",
+            [TranslationKeys.EmailConfirmation.Ignore]      = "If you did not create an account, you can safely ignore this email.",
+            [TranslationKeys.EmailConfirmation.Closing]     = "Yours Truly," 
         },
         [SupportedCultures.French] = new()
         {
-            ["email.confirmation.subject"]     = "Confirmez votre adresse e-mail",
-            ["email.confirmation.greeting"]    = "Bonjour {0},",
-            ["email.confirmation.instruction"] = "Merci de vous être inscrit. Veuillez confirmer votre adresse e-mail en cliquant sur le lien ci-dessous.",
-            ["email.confirmation.link_label"]  = "Confirmer l'adresse e-mail",
-            ["email.confirmation.expiry"]      = "Ce lien expire dans {0} heures.",
-            ["email.confirmation.ignore"]      = "Si vous n'avez pas créé de compte, vous pouvez ignorer cet e-mail."
+            [TranslationKeys.EmailConfirmation.Subject]     = "Confirmez votre adresse e-mail",
+            [TranslationKeys.EmailConfirmation.Greeting]    = "Bonjour {0},",
+            [TranslationKeys.EmailConfirmation.Instruction] = "Bienvenue ! Pour activer votre compte, veuillez confirmer votre adresse e-mail en cliquant sur le lien ci-dessous.",
+            [TranslationKeys.EmailConfirmation.LinkLabel]   = "Confirmer l'adresse e-mail",
+            [TranslationKeys.EmailConfirmation.Expiry]      = "Ce lien expire dans {0} heures.",
+            [TranslationKeys.EmailConfirmation.Ignore]      = "Si vous n'avez pas créé de compte, vous pouvez ignorer cet e-mail.",
+            [TranslationKeys.EmailConfirmation.Closing]     = "Cordialement,"
         },
         [SupportedCultures.German] = new()
         {
-            ["email.confirmation.subject"]     = "Bestätigen Sie Ihre E-Mail-Adresse",
-            ["email.confirmation.greeting"]    = "Hallo {0},",
-            ["email.confirmation.instruction"] = "Vielen Dank für Ihre Registrierung. Bitte bestätigen Sie Ihre E-Mail-Adresse, indem Sie auf den folgenden Link klicken.",
-            ["email.confirmation.link_label"]  = "E-Mail-Adresse bestätigen",
-            ["email.confirmation.expiry"]      = "Dieser Link läuft in {0} Stunden ab.",
-            ["email.confirmation.ignore"]      = "Wenn Sie kein Konto erstellt haben, können Sie diese E-Mail ignorieren."
+            [TranslationKeys.EmailConfirmation.Subject]     = "Bestätigen Sie Ihre E-Mail-Adresse",
+            [TranslationKeys.EmailConfirmation.Greeting]    = "Hallo {0},",
+            [TranslationKeys.EmailConfirmation.Instruction] = "Willkommen! Um Ihr Konto zu aktivieren, bestätigen Sie bitte Ihre E-Mail-Adresse, indem Sie auf den folgenden Link klicken.",
+            [TranslationKeys.EmailConfirmation.LinkLabel]   = "E-Mail-Adresse bestätigen",
+            [TranslationKeys.EmailConfirmation.Expiry]      = "Dieser Link läuft in {0} Stunden ab.",
+            [TranslationKeys.EmailConfirmation.Ignore]      = "Wenn Sie kein Konto erstellt haben, können Sie diese E-Mail ignorieren.",
+            [TranslationKeys.EmailConfirmation.Closing]     = "Mit freundlichen Grüßen,"
         }
     };
     
