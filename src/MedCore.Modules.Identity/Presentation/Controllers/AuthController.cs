@@ -79,7 +79,7 @@ public sealed class AuthController : BaseApiController
     [HttpPost("logout-all")]
     public async Task<IActionResult> LogoutAllAsync(CancellationToken ct)
     {
-        if (!Guid.TryParse(_currentUserService.UserId, out var userId))
+        if (!TryGetCurrentUserId(_currentUserService, out var userId))
             return ToActionResult(Result<bool>.Unauthorized(AuthErrors.InvalidCredentials));
         
         var result = await _authService.LogoutAllAsync(userId, ct);

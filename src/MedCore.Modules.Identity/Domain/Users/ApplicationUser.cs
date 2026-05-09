@@ -97,15 +97,18 @@ public sealed class ApplicationUser : IdentityUser<Guid>, IAuditableEntity
         if (string.IsNullOrWhiteSpace(modifiedBy))
             throw new DomainException("DOMAIN_USER_INVALID_MODIFIED_BY", "ModifiedBy is required.");
         
-        var nameChanged = firstName.Trim() != FirstName || lastName.Trim() != LastName;
+        var trimmedFirstName = firstName.Trim();
+        var trimmedLastName = lastName.Trim();
+        
+        var nameChanged = trimmedFirstName != FirstName || trimmedLastName != LastName;
         var birthDateChanged = birthDate != BirthDate;
         
         if (!nameChanged && !birthDateChanged) return;
         
         if (nameChanged)
         {
-            FirstName = firstName.Trim();
-            LastName = lastName.Trim();
+            FirstName = trimmedFirstName;
+            LastName = trimmedLastName;
         }
 
         if (birthDateChanged)

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MedCore.Common.ProblemDetails;
 using MedCore.Common.Results;
+using MedCore.Common.Services;
 
 [ApiController]
 public abstract class BaseApiController : ControllerBase
@@ -20,5 +21,10 @@ public abstract class BaseApiController : ControllerBase
             HttpContext.TraceIdentifier);
 
         return StatusCode(problem.Status!.Value, problem);
+    }
+
+    protected static bool TryGetCurrentUserId(ICurrentUserService currentUserService, out Guid userId)
+    {
+        return Guid.TryParse(currentUserService.UserId, out userId);
     }
 }

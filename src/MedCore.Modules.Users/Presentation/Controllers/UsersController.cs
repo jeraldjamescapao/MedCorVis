@@ -26,7 +26,7 @@ public sealed class UsersController : BaseApiController
     [HttpGet("me")]
     public async Task<IActionResult> GetCurrentUserAsync(CancellationToken ct)
     {
-        if (!Guid.TryParse(_currentUserService.UserId, out var userId))
+        if (!TryGetCurrentUserId(_currentUserService, out var userId))
             return ToActionResult(Result<UserResponse>.Unauthorized(UserErrors.InvalidToken));
 
         var result = await _userService.GetCurrentUserAsync(userId, ct);
@@ -37,7 +37,7 @@ public sealed class UsersController : BaseApiController
     public async Task<IActionResult> UpdateCultureAsync(
         [FromBody] UpdateCultureRequest request, CancellationToken ct)
     {
-        if (!Guid.TryParse(_currentUserService.UserId, out var userId))
+        if (!TryGetCurrentUserId(_currentUserService, out var userId))
             return ToActionResult(Result<bool>.Unauthorized(UserErrors.InvalidToken));
 
         var result = await _userService.UpdateCultureAsync(userId, request.Culture, ct);
@@ -50,7 +50,7 @@ public sealed class UsersController : BaseApiController
     public async Task<IActionResult> UpdateProfileAsync(
         [FromBody] UpdateProfileRequest request, CancellationToken ct)
     {
-        if (!Guid.TryParse(_currentUserService.UserId, out var userId))
+        if (!TryGetCurrentUserId(_currentUserService, out var userId))
             return ToActionResult(Result<UserResponse>.Unauthorized(UserErrors.InvalidToken));
 
         var result = await _userService.UpdateProfileAsync(userId, request, ct);
@@ -61,7 +61,7 @@ public sealed class UsersController : BaseApiController
     public async Task<IActionResult> UpdatePhoneAsync(
         [FromBody] UpdatePhoneRequest request, CancellationToken ct)
     {
-        if (!Guid.TryParse(_currentUserService.UserId, out var userId))
+        if (!TryGetCurrentUserId(_currentUserService, out var userId))
             return ToActionResult(Result<bool>.Unauthorized(UserErrors.InvalidToken));
 
         var result = await _userService.UpdatePhoneAsync(userId, request.PhoneNumber, ct);
