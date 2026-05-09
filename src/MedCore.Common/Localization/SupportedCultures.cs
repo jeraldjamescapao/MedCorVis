@@ -8,8 +8,8 @@ public static class SupportedCultures
     public const string FrenchSwitzerland = "fr-CH";
     public const string GermanSwitzerland = "de-CH";
 
-    public static readonly IReadOnlyList<string> All =
-        [English, French, German, FrenchSwitzerland, GermanSwitzerland];
+    public static readonly IReadOnlySet<string> All =
+        new HashSet<string> { English, French, German, FrenchSwitzerland, GermanSwitzerland };
 
     public const string Default = English;
 }

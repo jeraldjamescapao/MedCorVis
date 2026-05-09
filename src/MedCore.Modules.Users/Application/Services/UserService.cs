@@ -114,10 +114,6 @@ internal sealed class UserService : IUserService
             UserLogMessages.UpdatePhoneFailed(_logger, userId, null);
             return Result<bool>.Internal(UserErrors.PhoneUpdateFailed);
         }
-        
-        // TODO: send SMS verification code and require confirmation before marking
-        // PhoneNumberConfirmed = true. SetPhoneNumberAsync already resets
-        // PhoneNumberConfirmed to false — verification step plugs in here.
 
         UserLogMessages.UpdatePhoneSucceeded(_logger, userId, null);
 

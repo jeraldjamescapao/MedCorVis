@@ -174,8 +174,6 @@ From the solution root:
 dotnet test
 ```
 
-Runs 44 unit tests across all `AuthService` and `UserService` flows.
-
 ### API docs
 
 With the API running, visit: https://localhost:7212/scalar/v1
@@ -213,7 +211,7 @@ and override the `Email` section in `appsettings.Development.json`.
 ## Status
 
 Actively in development. Identity module, internationalization foundation, and Users module
-are complete with unit tests in place. Patients, Doctors, and Appointments modules coming next.
+are complete with unit tests in place. CodeItems, Patients, Doctors, and Appointments modules coming next.
 
 ## About the Author
 

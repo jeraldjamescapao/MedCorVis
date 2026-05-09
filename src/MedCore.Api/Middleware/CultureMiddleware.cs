@@ -2,7 +2,6 @@ namespace MedCore.Api.Middleware;
 
 using MedCore.Common.Localization;
 using MedCore.Common.Services;
-using System.IdentityModel.Tokens.Jwt;
 
 internal sealed class CultureMiddleware
 {
@@ -15,28 +14,32 @@ internal sealed class CultureMiddleware
     
     public async Task InvokeAsync(
         HttpContext context,
+        ICurrentUserService currentUserService,
         ICurrentCultureService currentCultureService,
         ICultureResolver cultureResolver)
     {
-        var culture = await ResolveAsync(context, cultureResolver);
+        var culture = await ResolveAsync(
+            currentUserService, 
+            cultureResolver, 
+            context.Request.Headers.AcceptLanguage.ToString(), 
+            context.RequestAborted);
+        
         currentCultureService.SetCulture(culture);
+        
         await _next(context);
     }
     
     private static async Task<string> ResolveAsync(
-        HttpContext context,
-        ICultureResolver cultureResolver)
+        ICurrentUserService currentUserService,
+        ICultureResolver cultureResolver,
+        string acceptLanguage,
+        CancellationToken ct)
     {
-        if (context.User.Identity?.IsAuthenticated is not true)
-            return ResolveFromHeader(context.Request.Headers.AcceptLanguage.ToString());
-        
-        var userIdClaim = context.User
-            .FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+        if (!currentUserService.IsAuthenticated || 
+            !Guid.TryParse(currentUserService.UserId, out var userId))
+            return ResolveFromHeader(acceptLanguage);
 
-        if (!Guid.TryParse(userIdClaim, out var userId))
-            return ResolveFromHeader(context.Request.Headers.AcceptLanguage.ToString());
-        
-        return await cultureResolver.ResolveForUserAsync(userId, context.RequestAborted);
+        return await cultureResolver.ResolveForUserAsync(userId, ct);
     }
     
     private static string ResolveFromHeader(string acceptLanguage)
