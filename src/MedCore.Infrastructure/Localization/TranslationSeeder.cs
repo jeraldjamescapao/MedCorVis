@@ -42,7 +42,7 @@ internal static class TranslationSeeder
     
     public static async Task SeedAsync(IServiceProvider serviceProvider)
     {
-        using var scope = serviceProvider.CreateScope();
+        await using var scope = serviceProvider.CreateAsyncScope();
 
         var repository = scope.ServiceProvider
             .GetRequiredService<ITranslationRepository>();
@@ -67,10 +67,12 @@ internal static class TranslationSeeder
                 }
 
                 await repository.AddAsync(new Translation(culture, key, value));
-                await repository.SaveChangesAsync();
                 seeded++;
             }
         }
+        
+        if (seeded > 0) 
+            await repository.SaveChangesAsync();
 
         logger.LogInformation(
             "Translation seeding complete. Seeded: {Seeded}, Skipped: {Skipped}.",

@@ -52,7 +52,7 @@ internal sealed class DbMessageLocalizer : IMessageLocalizer, ILocalizerCache
     
     public async Task LoadAsync(CancellationToken ct = default)
     {
-        using var scope = _scopeFactory.CreateScope();
+        await using var scope = _scopeFactory.CreateAsyncScope();
 
         var repository = scope.ServiceProvider
             .GetRequiredService<ITranslationRepository>();

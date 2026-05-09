@@ -9,7 +9,7 @@ internal static class IdentityRoleSeeder
 {
     public static async Task SeedAsync(IServiceProvider serviceProvider)
     {
-        using var scope = serviceProvider.CreateScope();
+        await using var scope = serviceProvider.CreateAsyncScope();
         
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
         var loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
