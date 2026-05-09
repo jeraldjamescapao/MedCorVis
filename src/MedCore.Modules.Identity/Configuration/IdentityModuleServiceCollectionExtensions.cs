@@ -24,7 +24,7 @@ using MedCore.Modules.Identity.Infrastructure.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
     
-public static class IdentityModuleServiceCollectionExtensions
+internal static class IdentityModuleServiceCollectionExtensions
 {
     public static IServiceCollection AddIdentityModule(
         this IServiceCollection services,

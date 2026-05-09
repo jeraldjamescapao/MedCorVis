@@ -10,7 +10,7 @@ internal static class TranslationSeeder
     // DbMessageLocalizer resolves them via the fallback chain: fr-CH → fr → en.
     // To override a regional culture, add an entry here with the specific culture key.
     private static readonly Dictionary<string, Dictionary<string, string>> Seeds 
-        = new Dictionary<string, Dictionary<string, string>>
+        = new(StringComparer.OrdinalIgnoreCase)
     {
         [SupportedCultures.English] = new()
         {
