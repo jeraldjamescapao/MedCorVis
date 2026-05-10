@@ -20,11 +20,13 @@ public static class ModuleExtensions
                            && type is { IsAbstract: false, IsInterface: false }
                            && !type.IsDefined(typeof(SkipAutoDiscoveryAttribute), inherit: false));
 
+        var controllerBuilder = services.AddControllers();
+        
         foreach (var moduleType in moduleTypes)
         {
             var module = (IModule)Activator.CreateInstance(moduleType)!;
             module.RegisterModule(services, configuration);
-            services.AddControllers().AddApplicationPart(moduleType.Assembly);
+            controllerBuilder.AddApplicationPart(moduleType.Assembly);
             registry.Register(module);
         }
         

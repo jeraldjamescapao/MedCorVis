@@ -24,14 +24,14 @@ internal static class IdentityRoleSeeder
             [AppRoles.Patient] = "Patient User"
         };
         
-        logger.LogInformation("Seeding identity roles: {Roles}.", string.Join(", ", roles.Keys));
+        RoleSeederLogMessages.RoleSeedingStarted(logger, string.Join(", ", roles.Keys), null);
         
         foreach (var role in roles)
         {
             var exists = await roleManager.RoleExistsAsync(role.Key);
             if (exists)
             {
-                logger.LogDebug("Role '{Role}' already exists. Skipping.", role.Key);
+                RoleSeederLogMessages.RoleAlreadyExists(logger, role.Key, null);
                 continue;
             }
             
@@ -40,12 +40,13 @@ internal static class IdentityRoleSeeder
 
             if (result.Succeeded)
             {
-                logger.LogInformation("Role '{Role}' seeded successfully.", role.Key);
+                RoleSeederLogMessages.RoleSeededSuccessfully(logger, role.Key, null);
                 continue;
             }
             
             var errors = string.Join(", ", result.Errors.Select(x => x.Description));
-            logger.LogError("Failed to seed role '{Role}': {Errors}.", role.Key, errors);
+            RoleSeederLogMessages.RoleSeedFailed(logger, role.Key, errors, null);
+            
             throw new InvalidOperationException($"Failed to seed role '{role.Key}': {errors}");
         }
     }

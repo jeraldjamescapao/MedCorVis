@@ -56,7 +56,7 @@ internal static class TranslationSeeder
             .GetRequiredService<ILoggerFactory>()
             .CreateLogger(nameof(TranslationSeeder));
 
-        logger.LogInformation("Seeding translations...");
+        LocalizerLogMessages.TranslationSeedingStarted(logger, null);
 
         var existingKeys = await repository.GetAllKeysAsync();
         
@@ -81,8 +81,6 @@ internal static class TranslationSeeder
         if (seeded > 0) 
             await repository.SaveChangesAsync();
 
-        logger.LogInformation(
-            "Translation seeding complete. Seeded: {Seeded}, Skipped: {Skipped}.",
-            seeded, skipped);
+        LocalizerLogMessages.TranslationSeedingCompleted(logger, seeded, skipped, null);
     }
 }
