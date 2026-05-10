@@ -177,4 +177,26 @@ internal static class AuthLogMessages
             "Confirmation email resent successfully for user {UserId}.");
     
     #endregion
+    
+    #region Refresh Token Cleanup
+
+    public static readonly Action<ILogger, int, Exception?> RefreshTokenCleanupStarted =
+        LoggerMessage.Define<int>(
+            LogLevel.Information,
+            new EventId(2060, "RefreshTokenCleanupStarted"),
+            "Refresh token cleanup service started. First run is immediate. Interval: every {IntervalInHours} hour(s).");
+
+    public static readonly Action<ILogger, int, DateTimeOffset, Exception?> RefreshTokenCleanupSucceeded =
+        LoggerMessage.Define<int, DateTimeOffset>(
+            LogLevel.Information,
+            new EventId(2061, "RefreshTokenCleanupSucceeded"),
+            "Expired refresh token cleanup complete: {DeletedCount} token(s) deleted. Next run at {NextRunAtUtc:u}.");
+
+    public static readonly Action<ILogger, Exception?> RefreshTokenCleanupFailed =
+        LoggerMessage.Define(
+            LogLevel.Error,
+            new EventId(2062, "RefreshTokenCleanupFailed"),
+            "Expired refresh token cleanup failed.");
+
+    #endregion
 }

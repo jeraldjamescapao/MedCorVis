@@ -1,5 +1,6 @@
 namespace MedCore.Modules.Identity.Infrastructure.BackgroundServices;
 
+using MedCore.Modules.Identity.Application.Logging;
 using MedCore.Modules.Identity.Configuration;
 using MedCore.Modules.Identity.Domain.Tokens;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,10 +26,7 @@ internal sealed class RefreshTokenCleanupService : BackgroundService
     
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
-        _logger.LogInformation(
-            "Refresh token cleanup service started. " +
-            "First run is immediate. Interval: every {IntervalInHours} hour(s).",
-            _settings.IntervalInHours);
+        AuthLogMessages.RefreshTokenCleanupStarted(_logger, _settings.IntervalInHours, null);
         
         while (!ct.IsCancellationRequested)
         {
@@ -45,11 +43,11 @@ internal sealed class RefreshTokenCleanupService : BackgroundService
             var repository = scope.ServiceProvider.GetRequiredService<IRefreshTokenRepository>();
             var deleted = await repository.DeleteExpiredAsync(ct);
             
-            _logger.LogInformation(
-                "Expired refresh token cleanup complete: {DeletedCount} token(s) deleted. " +
-                "Next run at {NextRunAtUtc:u}.",
+            AuthLogMessages.RefreshTokenCleanupSucceeded(
+                _logger,
                 deleted,
-                DateTimeOffset.UtcNow.AddHours(_settings.IntervalInHours));
+                DateTimeOffset.UtcNow.AddHours(_settings.IntervalInHours),
+                null);
         }
         catch (OperationCanceledException)
         {
@@ -57,7 +55,7 @@ internal sealed class RefreshTokenCleanupService : BackgroundService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Expired refresh token cleanup failed.");
+            AuthLogMessages.RefreshTokenCleanupFailed(_logger, ex);
         }
     }
 }

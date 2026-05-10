@@ -30,9 +30,7 @@ internal sealed class DbMessageLocalizer : IMessageLocalizer, ILocalizerCache
 
         if (translations is null)
         {
-            _logger.LogWarning(
-                "Translation cache is empty when resolving key '{Key}' for culture '{Culture}'. " +
-                "Returning key as fallback.", key, culture);
+            LocalizerLogMessages.TranslationCacheEmpty(_logger, key, culture, null);
             return key;
         }
 
@@ -43,9 +41,7 @@ internal sealed class DbMessageLocalizer : IMessageLocalizer, ILocalizerCache
                 return value;
         }
 
-        _logger.LogWarning(
-            "Missing translation for key '{Key}' in culture '{Culture}'. Returning key as fallback.",
-            key, culture);
+        LocalizerLogMessages.TranslationMissing(_logger, key, culture, null);
 
         return key;
     }
@@ -61,15 +57,13 @@ internal sealed class DbMessageLocalizer : IMessageLocalizer, ILocalizerCache
         
         _cache.Set(CacheKeys.Translations, grouped);
 
-        _logger.LogInformation(
-            "Translation cache loaded: {CultureCount} culture(s).",
-            grouped.Count);
+        LocalizerLogMessages.TranslationCacheLoaded(_logger, grouped.Count, null);
     }
     
     public void InvalidateCache()
     {
         _cache.Remove(CacheKeys.Translations);
-        _logger.LogInformation("Translation cache invalidated.");
+        LocalizerLogMessages.TranslationCacheInvalidated(_logger, null);
     }
     
     private static IEnumerable<string> BuildFallbackChain(string culture)
