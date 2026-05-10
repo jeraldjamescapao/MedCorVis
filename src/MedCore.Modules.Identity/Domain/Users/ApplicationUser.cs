@@ -16,9 +16,9 @@ public sealed class ApplicationUser : IdentityUser<Guid>, IAuditableEntity
     public bool IsActive { get; private set; } = true;
     
     public DateTimeOffset CreatedAtUtc { get; private set; }
-    public DateTimeOffset ModifiedAtUtc { get; private set; }
+    public DateTimeOffset? ModifiedAtUtc { get; private set; }
     public string CreatedBy { get; private set; } = null!;
-    public string ModifiedBy { get; private set; } = null!;
+    public string? ModifiedBy { get; private set; }
 
     public string FullName => $"{FirstName} {LastName}";
     public string FullNameInverted => $"{LastName}, {FirstName}";
@@ -45,9 +45,7 @@ public sealed class ApplicationUser : IdentityUser<Guid>, IAuditableEntity
         BirthDate = birthDate;
         PreferredCulture = preferredCulture;
         CreatedAtUtc = DateTimeOffset.UtcNow;
-        ModifiedAtUtc = DateTimeOffset.UtcNow;
         CreatedBy = createdBy;
-        ModifiedBy = createdBy;
         IsActive = true;
     }
 

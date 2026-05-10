@@ -52,15 +52,13 @@ internal sealed class IdentityDbContext
                 .IsRequired();
 
             entity.Property(x => x.ModifiedAtUtc)
-                .HasColumnType("datetimeoffset")
-                .IsRequired();
+                .HasColumnType("datetimeoffset");
             
             entity.Property(x => x.CreatedBy)
                 .IsRequired()
                 .HasMaxLength(100);
 
             entity.Property(x => x.ModifiedBy)
-                .IsRequired()
                 .HasMaxLength(100);
 
             entity.HasIndex(x => x.IsActive)

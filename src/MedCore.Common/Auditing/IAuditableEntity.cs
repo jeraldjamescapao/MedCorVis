@@ -5,7 +5,7 @@ using System;
 public interface IAuditableEntity
 {
     DateTimeOffset CreatedAtUtc { get; }
-    DateTimeOffset ModifiedAtUtc { get; }
+    DateTimeOffset? ModifiedAtUtc { get; }
     string CreatedBy { get; }
-    string ModifiedBy { get; }
+    string? ModifiedBy { get; }
 }

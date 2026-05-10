@@ -11,4 +11,4 @@ public sealed record UserResponse(
     string? PhoneNumber,
     bool IsActive,
     DateTimeOffset CreatedAtUtc,
-    DateTimeOffset ModifiedAtUtc);
+    DateTimeOffset? ModifiedAtUtc);
