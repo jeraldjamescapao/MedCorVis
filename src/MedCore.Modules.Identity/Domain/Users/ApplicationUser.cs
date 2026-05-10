@@ -122,6 +122,8 @@ public sealed class ApplicationUser : IdentityUser<Guid>, IAuditableEntity
     {
         if (string.IsNullOrWhiteSpace(culture))
             throw new DomainException("DOMAIN_USER_INVALID_CULTURE", "Culture is required.");
+        if (!SupportedCultures.All.Contains(culture))
+            throw new DomainException("DOMAIN_USER_INVALID_CULTURE", "Unsupported culture.");
         if (string.IsNullOrWhiteSpace(modifiedBy))
             throw new DomainException("DOMAIN_USER_INVALID_MODIFIED_BY", "ModifiedBy is required."); 
         
