@@ -18,14 +18,12 @@ internal sealed class LocalizationDbContextFactory : IDesignTimeDbContextFactory
             .AddEnvironmentVariables()
             .Build();
 
-        var connectionString = configuration.GetConnectionString("PostgreSqlConnection")
-                               ?? throw new InvalidOperationException("Database connection string was not found.");
+        var connectionString = configuration.GetConnectionString("SqlServerConnection")
+            ?? throw new InvalidOperationException("Database connection string was not found.");
 
         var optionsBuilder = new DbContextOptionsBuilder<LocalizationDbContext>();
-        optionsBuilder
-            .UseNpgsql(connectionString,
-                o => o.MigrationsAssembly("MedCore.Infrastructure"))
-            .UseSnakeCaseNamingConvention();
+        optionsBuilder.UseSqlServer(connectionString,
+            o => o.MigrationsAssembly("MedCore.Infrastructure"));
 
         return new LocalizationDbContext(optionsBuilder.Options);
     }

@@ -17,14 +17,12 @@ internal sealed class IdentityDbContextFactory : IDesignTimeDbContextFactory<Ide
             .AddEnvironmentVariables()
             .Build();
 
-        var connectionString = configuration.GetConnectionString("PostgreSqlConnection") 
-                               ?? throw new InvalidOperationException("Database connection string was not found.");
+        var connectionString = configuration.GetConnectionString("SqlServerConnection")
+            ?? throw new InvalidOperationException("Database connection string was not found.");
 
         var optionsBuilder = new DbContextOptionsBuilder<IdentityDbContext>();
-        optionsBuilder
-            .UseNpgsql(connectionString, 
-                o => o.MigrationsAssembly("MedCore.Modules.Identity"))
-            .UseSnakeCaseNamingConvention();
+        optionsBuilder.UseSqlServer(connectionString,
+            o => o.MigrationsAssembly("MedCore.Modules.Identity"));
 
         return new IdentityDbContext(optionsBuilder.Options);
     }    

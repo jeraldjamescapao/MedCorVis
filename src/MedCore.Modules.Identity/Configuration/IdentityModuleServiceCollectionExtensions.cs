@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using MedCore.Common.Configuration;
 using MedCore.Common.Services;
 using MedCore.Modules.Identity.Application.Abstractions.Authentication;
 using MedCore.Modules.Identity.Application.Abstractions.Email;
@@ -21,7 +20,6 @@ using MedCore.Modules.Identity.Infrastructure.Email;
 using MedCore.Modules.Identity.Infrastructure.Persistence;
 using MedCore.Modules.Identity.Infrastructure.Persistence.Repositories;
 using MedCore.Modules.Identity.Infrastructure.Services;
-using System.IdentityModel.Tokens.Jwt;
 using System.Text;
     
 internal static class IdentityModuleServiceCollectionExtensions
@@ -30,7 +28,7 @@ internal static class IdentityModuleServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("PostgreSqlConnection") 
+        var connectionString = configuration.GetConnectionString("SqlServerConnection") 
             ?? throw new InvalidOperationException("Database connection string is not configured.");
         
         services.AddIdentityPersistence(connectionString);
@@ -46,10 +44,8 @@ internal static class IdentityModuleServiceCollectionExtensions
     {
         services.AddDbContext<IdentityDbContext>(options =>
         {
-            options
-                .UseNpgsql(connectionString, 
-                    o => o.MigrationsAssembly("MedCore.Modules.Identity"))
-                .UseSnakeCaseNamingConvention();
+            options.UseSqlServer(connectionString,
+                o => o.MigrationsAssembly("MedCore.Modules.Identity"));
         });
         
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();

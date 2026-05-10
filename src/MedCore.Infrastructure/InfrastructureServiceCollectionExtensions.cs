@@ -17,15 +17,15 @@ public static class InfrastructureServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("PostgreSqlConnection") 
+        var connectionString = configuration.GetConnectionString("SqlServerConnection") 
             ?? throw new InvalidOperationException("Database connection string is not configured.");
 
         services.AddDbContext<LocalizationDbContext>(options =>
-            options
-                .UseNpgsql(connectionString,
-                    o => o.MigrationsAssembly("MedCore.Infrastructure"))
-                .UseSnakeCaseNamingConvention());
-
+        {
+            options.UseSqlServer(connectionString,
+                o => o.MigrationsAssembly("MedCore.Modules.Identity"));
+        });
+        
         services.AddMemoryCache();
 
         services.AddScoped<ITranslationRepository, TranslationRepository>();

@@ -3,38 +3,40 @@
 MedCore is a healthcare API for managing patients, doctors, and appointments.
 Built as a portfolio project showcasing .NET 10 modular monolith architecture
 with clean layer separation, JWT authentication, refresh token rotation,
-and structured logging. Built with ASP.NET Core, EF Core, and PostgreSQL.
+and structured logging. Built with ASP.NET Core, EF Core, and SQL Server.
 
 ## The Story
 
-I built MedCore to demonstrate how a production-ready backend is structured,
-not just that it works, but that it is built to last. The domain is healthcare:
-patients, doctors, and appointments. Simple enough to stay focused, complex
-enough to justify real architectural decisions. Every choice in this project,
-from `IIdentityUnitOfWork` enforcing the Dependency Inversion Principle to
-module boundaries designed for microservice extraction, reflects how I think
-about software: with the next developer, the next requirement, and the next
-scale in mind. MedCore is where I close the gap between knowing a pattern and
-knowing when and why to use it.
+I built MedCore to show how I approach backend development. The domain is healthcare:
+patients, doctors, and appointments. Straightforward enough to stay focused, but
+with enough moving parts to make real architectural decisions matter. I wanted a codebase where every decision has a reason I can defend, not just code that runs.
 
 ## What is built so far
 
 ### Identity Module
 
 - JWT authentication with refresh token rotation and theft detection
-- SHA-256 refresh token hashing stored in PostgreSQL
+- SHA-256 refresh token hashing stored in SQL Server
 - HttpOnly cookie-based token delivery
 - Email confirmation flow via MailKit (Ethereal Email for development)
 - Role-based access control (Admin, Patient, Doctor)
 - Structured logging with Serilog
 - RFC 7807 ProblemDetails error responses
 - Background service for expired token cleanup
-- API versioning (v1)
-- API documentation via Scalar UI at `/scalar/v1`
 
-### Internationalization
+### Users Module
 
-- DB-backed translations stored in the `localization` schema
+- User ID resolved from the JWT token. Never accepted from the URL to prevent Insecure Direct Object Reference (IDOR).
+- Profile data includes name, birth date, preferred culture, and account status
+- `GET /api/v1/users/me`: authenticated users can retrieve their own account profile
+- `PUT /api/v1/users/me/culture`: authenticated users can update their preferred language
+- `PUT /api/v1/users/me/profile`: authenticated users can update their name and birth date
+  > Note: in clinical systems, name and birth date changes are identity-critical and typically require admin approval. In MedCore, self-service edits are permitted at the account level. Clinical records (future Patients module) will enforce stricter controls.
+- `PUT /api/v1/users/me/phone`: authenticated users can update their phone number (confirmation via SMS is planned, not yet implemented)
+
+### Internationalization (I18N) Foundation
+
+- DB-backed translations stored in the `Localization` schema
 - Supported cultures: `en`, `fr`, `de`, `fr-CH`, `de-CH`
 - Culture resolution per request: authenticated users resolved from their stored
   preference, unauthenticated users resolved from the `Accept-Language` header,
@@ -43,49 +45,18 @@ knowing when and why to use it.
 - Confirmation emails delivered in the user's resolved language
 - Translations updatable without redeployment. Edit a row in the DB and call
   `POST /api/v1/admin/translations/refresh` to reload the cache immediately.
-- `POST /api/v1/admin/translations/refresh` — Admin only, reloads translation cache
-
-### Users Module
-
-- `GET /api/v1/users/me` — authenticated users can retrieve their own account profile
-- Profile data includes name, birth date, preferred culture, and account status
-- User ID resolved from the JWT token. Never accepted from the URL to prevent Insecure Direct Object Reference (IDOR).
-- Structured logging with EventIds starting at 3001
-- `PUT /api/v1/users/me/culture` — authenticated users can update their preferred language
-- `PUT /api/v1/users/me/profile` — authenticated users can update their name and birth date
-  > Note: in clinical systems, name and birth date changes are identity-critical and typically require admin approval. In MedCore, self-service edits are permitted at the account level. Clinical records (future Patients module) will enforce stricter controls.
-- `PUT /api/v1/users/me/phone` — authenticated users can update their phone number (confirmation via SMS is planned, not yet implemented)
+- `POST /api/v1/admin/translations/refresh`: Admin only, reloads translation cache
 
 ### Tests
 
-44 unit tests total across two test projects.
+44 unit tests across two projects using xUnit, NSubstitute, and FluentAssertions.
 
-**AuthService — 31 tests, 7 flows**
-- `RegisterTests` — email conflict, user creation failure, role assignment failure, email delivery failure, no culture defaults to null, valid culture is set, success
-- `LoginTests` — user not found, account deactivated, email not confirmed, invalid password, success
-- `RefreshTests` — empty token, token not found, revoked without replacement, expired token, reuse detected (full family revocation), user not found, success
-- `LogoutTests` — empty token, token not found or inactive, valid token revoked
-- `LogoutAllTests` — all sessions revoked for user
-- `ConfirmEmailTests` — user not found, already confirmed, invalid token, success
-- `ResendConfirmationEmailTests` — user not found (silent), already confirmed (silent), email delivery failure, success
+**AuthService**: 31 tests covering registration, login, token refresh, logout,
+logout-all, email confirmation, and confirmation resend (including reuse detection
+and full family revocation on token theft).
 
-**UserService — 13 tests, 4 flows**
-- `GetCurrentUserTests` — user not found, user exists with correct shape
-- `UpdateCultureTests` — unsupported culture, identity update fails, user not found, valid base culture, valid regional culture
-- `UpdateProfileTests` — user not found, identity update fails, valid request returns updated profile
-- `UpdatePhoneTests` — user not found, identity update fails, valid phone succeeds
-
-xUnit, NSubstitute, FluentAssertions
-
-## Tech Stack
-
-- ASP.NET Core (.NET 10)
-- PostgreSQL 17 (Docker)
-- Entity Framework Core 10
-- ASP.NET Core Identity
-- Serilog
-- MailKit
-- Seq (structured log viewer, Docker)
+**UserService**: 13 tests covering profile retrieval, culture update, profile update,
+and phone update.
 
 ## Architecture
 
@@ -97,26 +68,35 @@ Each module registers its own services, persistence, and controllers.
 The API host only handles startup wiring.
 
 `IIdentityUnitOfWork` is introduced in the Application layer to keep
-`IdentityDbContext` out of `AuthService`. This is intentional. It
-enforces the Dependency Inversion Principle and makes the service
-testable without a real database, even though it is overkill at this
-scale. It signals the module is ready for microservice extraction.
+`IdentityDbContext` out of `AuthService`. It enforces the Dependency
+Inversion Principle and makes the service testable without a real database,
+even though it is overkill at this scale. The intent is to show the module
+can be extracted without restructuring the service layer.
 
 `IMessageLocalizer` and `ILocalizerCache` are separated into two interfaces
 following the Interface Segregation Principle. Email service depends only on
-`IMessageLocalizer`. Startup warmup and admin refresh depend only on
+`IMessageLocalizer`. Cache warmup on startup and admin refresh depend only on
 `ILocalizerCache`. One implementation (`DbMessageLocalizer`) satisfies both.
 
 The Users module accesses `ApplicationUser` via `UserManager<ApplicationUser>` and shares
-the `identity.users` table with the Identity module. This is an accepted modular monolith
-tradeoff. Identity owns credentials and tokens. Users owns profile data. On extraction,
+the `Identity.Users` table with the Identity module. This is a known tradeoff in modular
+monoliths. Identity owns credentials and tokens. Users owns profile data. On extraction,
 Identity publishes a `UserRegisteredEvent` and Users maintains its own copy of profile
 data in a separate database.
 
-The data layer uses EF Core with PostgreSQL as the provider. Switching providers
-requires updating `UseNpgsql` to `UseSqlServer` in each `DbContext` registration
-and regenerating migrations. This is a deliberate tradeoff for a single-database
-portfolio project.
+The data layer uses EF Core with SQL Server as the provider. Switching providers
+requires updating `UseSqlServer` in each `DbContext` registration and regenerating
+migrations. SQL Server is the standard in enterprise .NET environments.
+
+## Tech Stack
+
+- ASP.NET Core (.NET 10)
+- SQL Server 2022 (Docker)
+- Entity Framework Core 10
+- ASP.NET Core Identity
+- Serilog
+- MailKit
+- Seq (structured log viewer, Docker)
 
 ## Getting Started
 
@@ -127,13 +107,28 @@ portfolio project.
 - dotnet-ef CLI (`dotnet tool install --global dotnet-ef`)
 - Trusted HTTPS dev certificate (`dotnet dev-certs https --trust`)
 
+#### Apple Silicon (M1/M2/M3/M4/M5)
+
+The official SQL Server Docker image does not support ARM64.
+Use `azure-sql-edge` as a drop-in replacement. In `docker-compose.yml`, replace:
+
+```yaml
+image: mcr.microsoft.com/mssql/server:2022-latest
+```
+
+with:
+
+```yaml
+image: mcr.microsoft.com/azure-sql-edge
+```
+
 ### Run the services
 
 ```bash
 docker-compose up -d
 ```
 
-PostgreSQL will be available at `localhost:5432`.  
+SQL Server will be available at `localhost:1433`.
 Seq will be available at `http://localhost:5341`.
 
 ### Apply migrations
@@ -162,7 +157,7 @@ dotnet run --project src/MedCore.Api/MedCore.Api.csproj --launch-profile https
 
 The API will be available at `https://localhost:7212`.
 
-On startup, the app seeds roles and translations automatically, then warms up
+On startup, the app seeds roles and translations automatically and loads
 the translation cache before accepting requests.
 
 ### Run the tests
@@ -175,22 +170,22 @@ dotnet test
 
 ### API docs
 
+The API is versioned. All endpoints are available under `/api/v1/`.
+
 With the API running, visit: https://localhost:7212/scalar/v1
 
 ### Structured logs (Seq)
 
 Visit `http://localhost:5341` to browse and query structured logs in real time.
 
-Logs are also written to rolling daily JSON files under `logs/` in the project root.
-
 ### Try the API with MedCore.http
 
 The repo includes `src/MedCore.Api/MedCore.http` with all endpoints
 pre-configured and ready to run. It works in:
 
-- **JetBrains Rider** — built-in HTTP client, no setup needed
-- **Visual Studio** — built-in HTTP client, no setup needed
-- **VS Code** — install the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) extension by Huachao Mao
+- **JetBrains Rider**: built-in HTTP client, no setup needed
+- **Visual Studio**: built-in HTTP client, no setup needed
+- **VS Code**: install the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) extension by Huachao Mao
 
 Open the file, start the API first, then set `@AccessToken` to a token from a login or register response and run any request directly from your editor.
 
@@ -201,16 +196,11 @@ Credentials in `appsettings.json` are intentional for reviewer convenience.
 To use your own Ethereal account, create a free one at https://ethereal.email
 and override the `Email` section in `appsettings.Development.json`.
 
-### Updating a translation without redeployment
-
-1. Connect to the database and update the relevant row in `localization.translations`
-2. Call `POST /api/v1/admin/translations/refresh` with an Admin Bearer token
-3. The cache is cleared and reloaded immediately — no restart required
-
 ## Status
 
-Actively in development. Identity module, internationalization foundation, and Users module
-are complete with unit tests in place. CodeItems, Patients, Doctors, and Appointments modules coming next.
+Actively in development. Identity module and Users module are complete with unit tests.
+Internationalization (I18N) foundation is complete. CodeItems, Patients, Doctors,
+and Appointments modules are next.
 
 ## About the Author
 
@@ -218,5 +208,5 @@ Jerald James Capao — Software Engineer
 
 GitHub: https://github.com/jeraldjamescapao
 
-This project is designed and implemented end-to-end, including architecture, domain modeling, and technical decisions.
+Architecture, domain modeling, and technical decisions are all my own.
 AI tools such as Anthropic Claude are used as support during development.

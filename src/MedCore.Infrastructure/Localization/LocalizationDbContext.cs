@@ -13,11 +13,11 @@ internal sealed class LocalizationDbContext : DbContext
     {
         base.OnModelCreating(builder);
 
-        builder.HasDefaultSchema("localization");
+        builder.HasDefaultSchema("Localization");
 
         builder.Entity<Translation>(entity =>
         {
-            entity.ToTable("translations");
+            entity.ToTable("Translations");
 
             entity.HasKey(x => x.Id);
 
@@ -34,14 +34,14 @@ internal sealed class LocalizationDbContext : DbContext
 
             entity.Property(x => x.Value)
                 .IsRequired()
-                .HasColumnType("text");
+                .HasColumnType("nvarchar(max)");
 
             entity.HasIndex(x => x.Culture)
-                .HasDatabaseName("ix_translations_culture");
+                .HasDatabaseName("IX_Translations_Culture");
 
             entity.HasIndex(x => new { x.Culture, x.Key })
                 .IsUnique()
-                .HasDatabaseName("ix_translations_culture_key");
+                .HasDatabaseName("IX_Translations_Culture_Key");
         });
     }
 }

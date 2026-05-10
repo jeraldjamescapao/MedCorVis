@@ -21,11 +21,11 @@ internal sealed class IdentityDbContext
     {
         base.OnModelCreating(builder);
 
-        builder.HasDefaultSchema("identity");
+        builder.HasDefaultSchema("Identity");
 
         builder.Entity<ApplicationUser>(entity =>
         {
-            entity.ToTable("users");
+            entity.ToTable("Users");
 
             entity.Property(x => x.FirstName)
                 .IsRequired()
@@ -48,11 +48,11 @@ internal sealed class IdentityDbContext
                 .HasDefaultValue(true);
 
             entity.Property(x => x.CreatedAtUtc)
-                .HasColumnType("timestamp with time zone")
+                .HasColumnType("datetimeoffset")
                 .IsRequired();
 
             entity.Property(x => x.ModifiedAtUtc)
-                .HasColumnType("timestamp with time zone")
+                .HasColumnType("datetimeoffset")
                 .IsRequired();
             
             entity.Property(x => x.CreatedBy)
@@ -64,12 +64,12 @@ internal sealed class IdentityDbContext
                 .HasMaxLength(100);
 
             entity.HasIndex(x => x.IsActive)
-                .HasDatabaseName("ix_users_is_active");
+                .HasDatabaseName("IX_Users_Is_Active");
         });
 
         builder.Entity<ApplicationRole>(entity =>
         {
-            entity.ToTable("roles");
+            entity.ToTable("Roles");
             
             entity.Property(x => x.Description)
                 .IsRequired()
@@ -78,32 +78,32 @@ internal sealed class IdentityDbContext
 
         builder.Entity<IdentityUserRole<Guid>>(entity =>
         {
-            entity.ToTable("user_roles");
+            entity.ToTable("UserRoles");
         });
 
         builder.Entity<IdentityUserClaim<Guid>>(entity =>
         {
-            entity.ToTable("user_claims");
+            entity.ToTable("UserClaims");
         });
 
         builder.Entity<IdentityUserLogin<Guid>>(entity =>
         {
-            entity.ToTable("user_logins");
+            entity.ToTable("UserLogins");
         });
 
         builder.Entity<IdentityRoleClaim<Guid>>(entity =>
         {
-            entity.ToTable("role_claims");
+            entity.ToTable("RoleClaims");
         });
 
         builder.Entity<IdentityUserToken<Guid>>(entity =>
         {
-            entity.ToTable("user_tokens");
+            entity.ToTable("UserTokens");
         });
         
         builder.Entity<RefreshToken>(entity =>
         {
-            entity.ToTable("refresh_tokens");
+            entity.ToTable("RefreshTokens");
 
             entity.HasKey(x => x.Id);
 
@@ -112,11 +112,11 @@ internal sealed class IdentityDbContext
                 .HasMaxLength(500);
 
             entity.Property(x => x.ExpiresAtUtc)
-                .HasColumnType("timestamp with time zone")
+                .HasColumnType("datetimeoffset")
                 .IsRequired();
 
             entity.Property(x => x.CreatedAtUtc)
-                .HasColumnType("timestamp with time zone")
+                .HasColumnType("datetimeoffset")
                 .IsRequired();
 
             entity.Property(x => x.IsRevoked)
@@ -135,6 +135,5 @@ internal sealed class IdentityDbContext
 
             entity.HasIndex(x => x.UserId);
         });
-
     }
 }

@@ -2,16 +2,16 @@
 using MedCore.Infrastructure.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace MedCore.Infrastructure.Migrations
 {
     [DbContext(typeof(LocalizationDbContext))]
-    [Migration("20260505113556_InitialLocalizationSchema")]
+    [Migration("20260510185431_InitialLocalizationSchema")]
     partial class InitialLocalizationSchema
     {
         /// <inheritdoc />
@@ -19,49 +19,44 @@ namespace MedCore.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasDefaultSchema("localization")
+                .HasDefaultSchema("Localization")
                 .HasAnnotation("ProductVersion", "10.0.3")
-                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("MedCore.Infrastructure.Localization.Translation", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Culture")
                         .IsRequired()
                         .HasMaxLength(10)
-                        .HasColumnType("character varying(10)")
-                        .HasColumnName("culture");
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("Key")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("key");
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Value")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("value");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id")
-                        .HasName("pk_translations");
+                    b.HasKey("Id");
 
                     b.HasIndex("Culture")
-                        .HasDatabaseName("ix_translations_culture");
+                        .HasDatabaseName("IX_Translations_Culture");
 
                     b.HasIndex("Culture", "Key")
                         .IsUnique()
-                        .HasDatabaseName("ix_translations_culture_key");
+                        .HasDatabaseName("IX_Translations_Culture_Key");
 
-                    b.ToTable("translations", "localization");
+                    b.ToTable("Translations", "Localization");
                 });
 #pragma warning restore 612, 618
         }
