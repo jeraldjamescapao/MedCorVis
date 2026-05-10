@@ -41,15 +41,15 @@ knowing when and why to use it.
   fallback to `en`
 - Preferred culture cached per user with a 30-minute sliding expiry
 - Confirmation emails delivered in the user's resolved language
-- Translations updatable without redeployment — edit a row in the DB and call
-  `POST /api/v1/admin/translations/refresh` to reload the cache immediately
+- Translations updatable without redeployment. Edit a row in the DB and call
+  `POST /api/v1/admin/translations/refresh` to reload the cache immediately.
 - `POST /api/v1/admin/translations/refresh` — Admin only, reloads translation cache
 
 ### Users Module
 
 - `GET /api/v1/users/me` — authenticated users can retrieve their own account profile
 - Profile data includes name, birth date, preferred culture, and account status
-- User ID resolved from the JWT token — never accepted from the URL to prevent Insecure Direct Object Reference (IDOR)
+- User ID resolved from the JWT token. Never accepted from the URL to prevent Insecure Direct Object Reference (IDOR).
 - Structured logging with EventIds starting at 3001
 - `PUT /api/v1/users/me/culture` — authenticated users can update their preferred language
 - `PUT /api/v1/users/me/profile` — authenticated users can update their name and birth date
@@ -109,15 +109,14 @@ following the Interface Segregation Principle. Email service depends only on
 
 The Users module accesses `ApplicationUser` via `UserManager<ApplicationUser>` and shares
 the `identity.users` table with the Identity module. This is an accepted modular monolith
-tradeoff. Both modules have clearly separated responsibilities — Identity owns credentials
-and tokens, Users owns profile data. On extraction, Identity publishes a `UserRegisteredEvent`
-and Users maintains its own copy of profile data in a separate database. The boundary is
-validated now so the code does not need to change when the data layer does.
+tradeoff. Identity owns credentials and tokens. Users owns profile data. On extraction,
+Identity publishes a `UserRegisteredEvent` and Users maintains its own copy of profile
+data in a separate database.
 
-The data layer uses EF Core. Switching providers requires updating `UseNpgsql`
-to `UseSqlServer` in each `DbContext` registration and regenerating migrations.
-The abstraction is intentionally kept simple. Provider portability is a known
-tradeoff, not an oversight.
+The data layer uses EF Core with PostgreSQL as the provider. Switching providers
+requires updating `UseNpgsql` to `UseSqlServer` in each `DbContext` registration
+and regenerating migrations. This is a deliberate tradeoff for a single-database
+portfolio project.
 
 ## Getting Started
 
