@@ -8,58 +8,26 @@ and structured logging. Built with ASP.NET Core, EF Core, and SQL Server.
 ## The Story
 
 I built MedCore to show how I approach backend development. The domain is healthcare:
-patients, doctors, and appointments. Straightforward enough to stay focused, but
-with enough moving parts to make real architectural decisions matter. I wanted a codebase where every decision has a reason I can defend, not just code that runs.
+patients, doctors, and appointments. I wanted a codebase where every decision has
+a reason I can defend, not just code that runs.
 
 ## What is built so far
 
-### Identity Module
+**Identity** — JWT authentication with refresh token rotation, theft detection,
+SHA-256 token hashing, HttpOnly cookie delivery, email confirmation via MailKit,
+role-based access control, and a background service for expired token cleanup.
 
-- JWT authentication with refresh token rotation and theft detection
-- SHA-256 refresh token hashing stored in SQL Server
-- HttpOnly cookie-based token delivery
-- Email confirmation flow via MailKit (Ethereal Email for development)
-- Role-based access control (Admin, Patient, Doctor)
-- Structured logging with Serilog
-- RFC 7807 ProblemDetails error responses
-- Background service for expired token cleanup
+**Users** — profile management with culture preference per user. User ID is always
+resolved from the JWT token to prevent IDOR.
 
-### Users Module
+**Localization** — translations stored in SQL Server, served from an in-memory cache
+with a sliding expiry and a culture fallback chain (e.g. `fr-CH → fr → en`).
+Admins can create, update, and soft-delete translations without a code change or restart.
 
-- User ID resolved from the JWT token. Never accepted from the URL to prevent Insecure Direct Object Reference (IDOR).
-- Profile data includes name, birth date, preferred culture, and account status
-- `GET /api/v1/users/me`: authenticated users can retrieve their own account profile
-- `PUT /api/v1/users/me/culture`: authenticated users can update their preferred language
-- `PUT /api/v1/users/me/profile`: authenticated users can update their name and birth date
-  > Note: in clinical systems, name and birth date changes are identity-critical and typically require admin approval. In MedCore, self-service edits are permitted at the account level. Clinical records (future Patients module) will enforce stricter controls.
-- `PUT /api/v1/users/me/phone`: authenticated users can update their phone number (confirmation via SMS is planned, not yet implemented)
+## Tests
 
-### Localization Module
-
-- DB-backed translations stored in the `Localization` schema
-- Supported cultures: `en`, `fr`, `de`, `fr-CH`, `de-CH`
-- Culture resolution per request: authenticated users resolved from their stored
-  preference, unauthenticated users resolved from the `Accept-Language` header,
-  fallback to `en`
-- Preferred culture cached per user with a 30-minute sliding expiry
-- Confirmation emails delivered in the user's resolved language
-- `POST /api/v1/admin/translations/cache/refresh`: Admin only, reloads translation cache
-- `GET /api/v1/admin/translations`: returns all translations, optionally filtered by `?culture=`
-- `GET /api/v1/admin/translations/{id}`: returns a single translation by ID
-- `POST /api/v1/admin/translations`: creates a new translation
-- `PUT /api/v1/admin/translations/{id}`: updates the value and description of a translation
-- `DELETE /api/v1/admin/translations/{id}`: soft-deletes a translation; preserves audit trail
-
-### Tests
-
-44 unit tests across two projects using xUnit, NSubstitute, and FluentAssertions.
-
-**AuthService**: 31 tests covering registration, login, token refresh, logout,
-logout-all, email confirmation, and confirmation resend (including reuse detection
-and full family revocation on token theft).
-
-**UserService**: 13 tests covering profile retrieval, culture update, profile update,
-and phone update.
+63 unit tests across three projects using xUnit, NSubstitute, and FluentAssertions.
+Each service is tested in isolation with faked dependencies.
 
 ## Architecture
 
@@ -72,9 +40,8 @@ The API host only handles startup wiring.
 
 `IIdentityUnitOfWork` is introduced in the Application layer to keep
 `IdentityDbContext` out of `AuthService`. It enforces the Dependency
-Inversion Principle and makes the service testable without a real database,
-even though it is overkill at this scale. The intent is to show the module
-can be extracted without restructuring the service layer.
+Inversion Principle, makes the service unit-testable without a real database,
+and prepares the module for extraction without restructuring the service layer.
 
 `IMessageLocalizer` and `ILocalizerCache` are separated into two interfaces
 following the Interface Segregation Principle. Email service depends only on
@@ -89,7 +56,7 @@ data in a separate database.
 
 The data layer uses EF Core with SQL Server as the provider. Switching providers
 requires updating `UseSqlServer` in each `DbContext` registration and regenerating
-migrations. SQL Server is the standard in enterprise .NET environments.
+migrations.
 
 ## Tech Stack
 
@@ -210,9 +177,8 @@ Use this account to log in and test the translation management endpoints.
 
 ## Status
 
-Actively in development. Identity module, Users module, and Localization module are complete.
-Identity and Users modules have unit test coverage. CodeItems, Patients, Doctors,
-and Appointments modules are next.
+Actively in development. Identity, Users, and Localization modules are complete with unit test coverage.
+CodeItems, Patients, Doctors, and Appointments modules are next.
 
 ## About the Author
 

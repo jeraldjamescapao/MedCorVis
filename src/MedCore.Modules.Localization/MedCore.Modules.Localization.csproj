@@ -17,4 +17,8 @@
     <ItemGroup>
         <ProjectReference Include="..\MedCore.Common\MedCore.Common.csproj" />
     </ItemGroup>
+    <ItemGroup>
+        <InternalsVisibleTo Include="MedCore.Modules.Localization.Tests" />
+        <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+    </ItemGroup>
 </Project>

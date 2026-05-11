@@ -6,6 +6,7 @@
 |   Healthcare API for patients, doctors,          |
 |   and appointments.                              |
 |                                                  |
-|   Docs  ->  /scalar/v1                           |
+|   API Docs  ->  /scalar/v1                       |
+|   Logs      ->  http://localhost:5341            |
 |                                                  |
 +--------------------------------------------------+
