@@ -2,7 +2,7 @@
 @ContentType = application/json
 
 # Copy an access token from a login or register response and paste it here.
-@AccessToken = 
+@AccessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmMTA2NTU1Zi01MjQ3LTRjMzEtYTcyNy0yOWRmZDYwZmFkMTAiLCJlbWFpbCI6ImFkbWluQG1lZGNvcmUuZGV2IiwianRpIjoiZDA1YzMzZGUtMzk3Mi00Yjk1LWJlNzUtOWNiN2VkYzgzYWZjIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE3Nzg1MTAyODEsImlzcyI6Ik1lZENvcmUiLCJhdWQiOiJNZWRDb3JlIn0.ygpB2sezUheM650LgYu_S1lNe_Gg-zmkXJlkVKibObw
 
 ###
 
@@ -200,8 +200,7 @@ Authorization: Bearer {{AccessToken}}
 # Returns: 204 No Content.
 # ─────────────────────────────────────────
 
-POST {{MedCore_HostAddress}}/api/v1/admin/translations/cache/refresh
-Content-Type: {{ContentType}}
+POST {{MedCore_HostAddress}}/api/v1/translations/cache/refresh
 Authorization: Bearer {{AccessToken}}
 
 ###
@@ -214,7 +213,7 @@ Authorization: Bearer {{AccessToken}}
 # Returns: 200 with list of translations.
 # ─────────────────────────────────────────
 
-GET {{MedCore_HostAddress}}/api/v1/admin/translations
+GET {{MedCore_HostAddress}}/api/v1/translations
 Authorization: Bearer {{AccessToken}}
 
 ###
@@ -225,7 +224,7 @@ Authorization: Bearer {{AccessToken}}
 # Returns: 200 with filtered list of translations.
 # ─────────────────────────────────────────
 
-GET {{MedCore_HostAddress}}/api/v1/admin/translations?culture=fr
+GET {{MedCore_HostAddress}}/api/v1/translations?culture=fr
 Authorization: Bearer {{AccessToken}}
 
 ###
@@ -236,7 +235,7 @@ Authorization: Bearer {{AccessToken}}
 # Returns: 200 with translation, or 404 if not found.
 # ─────────────────────────────────────────
 
-GET {{MedCore_HostAddress}}/api/v1/admin/translations/1
+GET {{MedCore_HostAddress}}/api/v1/translations/1
 Authorization: Bearer {{AccessToken}}
 
 ###
@@ -247,7 +246,7 @@ Authorization: Bearer {{AccessToken}}
 # Returns: 201 with created translation.
 # ─────────────────────────────────────────
 
-POST {{MedCore_HostAddress}}/api/v1/admin/translations
+POST {{MedCore_HostAddress}}/api/v1/translations
 Content-Type: {{ContentType}}
 Authorization: Bearer {{AccessToken}}
 
@@ -267,7 +266,7 @@ Authorization: Bearer {{AccessToken}}
 # Returns: 200 with updated translation.
 # ─────────────────────────────────────────
 
-PUT {{MedCore_HostAddress}}/api/v1/admin/translations/1
+PUT {{MedCore_HostAddress}}/api/v1/translations/1
 Content-Type: {{ContentType}}
 Authorization: Bearer {{AccessToken}}
 
@@ -285,7 +284,7 @@ Authorization: Bearer {{AccessToken}}
 # Returns: 204 No Content.
 # ─────────────────────────────────────────
 
-DELETE {{MedCore_HostAddress}}/api/v1/admin/translations/1
+DELETE {{MedCore_HostAddress}}/api/v1/translations/1
 Authorization: Bearer {{AccessToken}}
 
 ###

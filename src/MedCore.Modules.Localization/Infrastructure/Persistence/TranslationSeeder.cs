@@ -15,7 +15,7 @@ internal static class TranslationSeeder
     private static readonly Dictionary<string, Dictionary<string, string>> Seeds 
         = new(StringComparer.OrdinalIgnoreCase)
     {
-        [SupportedCultures.English] = new()
+        [SupportedCultures.English] = new(StringComparer.OrdinalIgnoreCase)
         {
             [TranslationKeys.AppGeneral.Name] = "MedCore by Jerald James Capao",
             [TranslationKeys.EmailConfirmation.Subject]     = "Confirm your email address",
@@ -26,7 +26,7 @@ internal static class TranslationSeeder
             [TranslationKeys.EmailConfirmation.Ignore]      = "If you did not create an account, you can safely ignore this email.",
             [TranslationKeys.EmailConfirmation.Closing]     = "Yours Truly," 
         },
-        [SupportedCultures.French] = new()
+        [SupportedCultures.French] = new(StringComparer.OrdinalIgnoreCase)
         {
             [TranslationKeys.EmailConfirmation.Subject]     = "Confirmez votre adresse e-mail",
             [TranslationKeys.EmailConfirmation.Greeting]    = "Bonjour {0},",
@@ -36,7 +36,7 @@ internal static class TranslationSeeder
             [TranslationKeys.EmailConfirmation.Ignore]      = "Si vous n'avez pas créé de compte, vous pouvez ignorer cet e-mail.",
             [TranslationKeys.EmailConfirmation.Closing]     = "Cordialement,"
         },
-        [SupportedCultures.German] = new()
+        [SupportedCultures.German] = new(StringComparer.OrdinalIgnoreCase)
         {
             [TranslationKeys.EmailConfirmation.Subject]     = "Bestätigen Sie Ihre E-Mail-Adresse",
             [TranslationKeys.EmailConfirmation.Greeting]    = "Hallo {0},",

@@ -10,8 +10,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiVersion("1")]
-[Route("api/v{version:apiVersion}/admin")]
-[Authorize(Roles = AppRoles.Admin)]
+[Route("api/v{version:apiVersion}/translations")]
+[Authorize]
 public sealed class LocalizationController : BaseApiController
 {
     private readonly ITranslationService _translationService;
@@ -21,14 +21,16 @@ public sealed class LocalizationController : BaseApiController
         _translationService = translationService;   
     }
 
-    [HttpPost("translations/cache/refresh")]
+    [HttpPost("cache/refresh")]
+    [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> RefreshTranslationCacheAsync(CancellationToken ct)
     {
         await _translationService.RefreshCacheAsync(ct);
         return NoContent();
     }
     
-    [HttpGet("translations")]
+    [HttpGet]
+    [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> GetAllAsync(
         [FromQuery] string? culture, CancellationToken ct)
     {
@@ -36,14 +38,16 @@ public sealed class LocalizationController : BaseApiController
         return ToActionResult(result);
     }
     
-    [HttpGet("translations/{id:long}")]
+    [HttpGet("{id:long}")]
+    [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> GetByIdAsync(long id, CancellationToken ct)
     {
         var result = await _translationService.GetByIdAsync(id, ct);
         return ToActionResult(result);
     }
     
-    [HttpPost("translations")]
+    [HttpPost]
+    [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> CreateAsync(
         [FromBody] CreateTranslationRequest request, CancellationToken ct)
     {
@@ -53,7 +57,8 @@ public sealed class LocalizationController : BaseApiController
         return ToActionResult(result, StatusCodes.Status201Created);
     }
     
-    [HttpPut("translations/{id:long}")]
+    [HttpPut("{id:long}")]
+    [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> UpdateAsync(
         long id, [FromBody] UpdateTranslationRequest request, CancellationToken ct)
     {
@@ -61,7 +66,8 @@ public sealed class LocalizationController : BaseApiController
         return ToActionResult(result);
     }
     
-    [HttpDelete("translations/{id:long}")]
+    [HttpDelete("{id:long}")]
+    [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> DeleteAsync(long id, CancellationToken ct)
     {
         var result = await _translationService.DeleteAsync(id, ct);
