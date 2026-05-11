@@ -44,6 +44,11 @@ with enough moving parts to make real architectural decisions matter. I wanted a
 - Preferred culture cached per user with a 30-minute sliding expiry
 - Confirmation emails delivered in the user's resolved language
 - `POST /api/v1/admin/translations/cache/refresh`: Admin only, reloads translation cache
+- `GET /api/v1/admin/translations`: returns all translations, optionally filtered by `?culture=`
+- `GET /api/v1/admin/translations/{id}`: returns a single translation by ID
+- `POST /api/v1/admin/translations`: creates a new translation
+- `PUT /api/v1/admin/translations/{id}`: updates the value and description of a translation
+- `DELETE /api/v1/admin/translations/{id}`: soft-deletes a translation; preserves audit trail
 
 ### Tests
 

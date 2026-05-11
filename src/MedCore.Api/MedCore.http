@@ -2,7 +2,7 @@
 @ContentType = application/json
 
 # Copy an access token from a login or register response and paste it here.
-@AccessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmMTA2NTU1Zi01MjQ3LTRjMzEtYTcyNy0yOWRmZDYwZmFkMTAiLCJlbWFpbCI6ImFkbWluQG1lZGNvcmUuZGV2IiwianRpIjoiMDA3MmRiNmYtY2U2MC00Nzk0LWJjYzYtODRhNThiZTQ4NGQ3IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE3Nzg0OTQ3MDIsImlzcyI6Ik1lZENvcmUiLCJhdWQiOiJNZWRDb3JlIn0.rs0q3O-f1gUEbT4T9ZdMLnL_hvAoA-_EZ7xSTA_U8GY
+@AccessToken = 
 
 ###
 
@@ -202,6 +202,90 @@ Authorization: Bearer {{AccessToken}}
 
 POST {{MedCore_HostAddress}}/api/v1/admin/translations/cache/refresh
 Content-Type: {{ContentType}}
+Authorization: Bearer {{AccessToken}}
+
+###
+
+# ─────────────────────────────────────────
+# Localization — Get All Translations
+# Returns all translations, optionally filtered by culture.
+# Supported culture values: en, fr, de, fr-CH, de-CH
+# Requires: valid Bearer token with Admin role.
+# Returns: 200 with list of translations.
+# ─────────────────────────────────────────
+
+GET {{MedCore_HostAddress}}/api/v1/admin/translations
+Authorization: Bearer {{AccessToken}}
+
+###
+
+# ─────────────────────────────────────────
+# Localization — Get All Translations by Culture
+# Requires: valid Bearer token with Admin role.
+# Returns: 200 with filtered list of translations.
+# ─────────────────────────────────────────
+
+GET {{MedCore_HostAddress}}/api/v1/admin/translations?culture=fr
+Authorization: Bearer {{AccessToken}}
+
+###
+
+# ─────────────────────────────────────────
+# Localization — Get Translation by ID
+# Requires: valid Bearer token with Admin role.
+# Returns: 200 with translation, or 404 if not found.
+# ─────────────────────────────────────────
+
+GET {{MedCore_HostAddress}}/api/v1/admin/translations/1
+Authorization: Bearer {{AccessToken}}
+
+###
+
+# ─────────────────────────────────────────
+# Localization — Create Translation
+# Requires: valid Bearer token with Admin role.
+# Returns: 201 with created translation.
+# ─────────────────────────────────────────
+
+POST {{MedCore_HostAddress}}/api/v1/admin/translations
+Content-Type: {{ContentType}}
+Authorization: Bearer {{AccessToken}}
+
+{
+  "culture": "en",
+  "key": "app.general.get_well_soon",
+  "value": "Get well soon!",
+  "description": "Get well soon wish."
+}
+
+###
+
+# ─────────────────────────────────────────
+# Localization — Update Translation
+# Culture and Key are not updatable.
+# Requires: valid Bearer token with Admin role.
+# Returns: 200 with updated translation.
+# ─────────────────────────────────────────
+
+PUT {{MedCore_HostAddress}}/api/v1/admin/translations/1
+Content-Type: {{ContentType}}
+Authorization: Bearer {{AccessToken}}
+
+{
+  "value": "MedCore by Jerald James Capao © 2026",
+  "description": "Updated general app name."
+}
+
+###
+
+# ─────────────────────────────────────────
+# Localization — Delete Translation (Soft)
+# Sets IsActive to false. Preserves audit trail.
+# Requires: valid Bearer token with Admin role.
+# Returns: 204 No Content.
+# ─────────────────────────────────────────
+
+DELETE {{MedCore_HostAddress}}/api/v1/admin/translations/1
 Authorization: Bearer {{AccessToken}}
 
 ###

@@ -32,7 +32,7 @@ internal sealed class DbMessageLocalizer : IMessageLocalizer, ILocalizerCache
 
         if (translations is null)
         {
-            LocalizerLogMessages.TranslationCacheEmpty(_logger, key, culture, null);
+            TranslationLogMessages.TranslationCacheEmpty(_logger, key, culture, null);
             return key;
         }
 
@@ -43,7 +43,7 @@ internal sealed class DbMessageLocalizer : IMessageLocalizer, ILocalizerCache
                 return value;
         }
 
-        LocalizerLogMessages.TranslationMissing(_logger, key, culture, null);
+        TranslationLogMessages.TranslationMissing(_logger, key, culture, null);
 
         return key;
     }
@@ -59,13 +59,13 @@ internal sealed class DbMessageLocalizer : IMessageLocalizer, ILocalizerCache
         
         _cache.Set(CacheKeys.Translations, grouped);
 
-        LocalizerLogMessages.TranslationCacheLoaded(_logger, grouped.Count, null);
+        TranslationLogMessages.TranslationCacheLoaded(_logger, grouped.Count, null);
     }
     
     public void InvalidateCache()
     {
         _cache.Remove(CacheKeys.Translations);
-        LocalizerLogMessages.TranslationCacheInvalidated(_logger, null);
+        TranslationLogMessages.TranslationCacheInvalidated(_logger, null);
     }
     
     private static IEnumerable<string> BuildFallbackChain(string culture)

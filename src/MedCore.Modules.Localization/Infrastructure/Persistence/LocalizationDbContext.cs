@@ -27,11 +27,11 @@ internal sealed class LocalizationDbContext : DbContext
 
             entity.Property(x => x.Culture)
                 .IsRequired()
-                .HasMaxLength(10);
+                .HasMaxLength(Translation.CultureMaxLength);
 
             entity.Property(x => x.Key)
                 .IsRequired()
-                .HasMaxLength(200);
+                .HasMaxLength(Translation.KeyMaxLength);
 
             entity.Property(x => x.Value)
                 .IsRequired()

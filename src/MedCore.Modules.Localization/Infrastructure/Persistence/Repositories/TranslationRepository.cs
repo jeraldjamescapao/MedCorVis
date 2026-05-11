@@ -40,15 +40,51 @@ internal sealed class TranslationRepository : ITranslationRepository
 
         return pairs.Select(p => (p.Culture, p.Key)).ToHashSet();
     }
+    
+    public async Task<IReadOnlyList<Translation>> GetAllAsync(
+        string? culture, CancellationToken ct = default)
+    {
+        var query = _context.Translations.AsNoTracking();
 
-    public async Task AddAsync(
+        if (!string.IsNullOrWhiteSpace(culture))
+            query = query.Where(t => t.Culture == culture);
+
+        return await query
+            .OrderBy(t => t.Culture)
+            .ThenBy(t => t.Key)
+            .ToListAsync(ct);
+    }
+    
+    public async Task<Translation?> GetByIdAsync(long id, CancellationToken ct = default)
+    {
+        return await _context.Translations.FindAsync([id], ct);
+    }
+    
+    public async Task<bool> ExistsAsync(string culture, string key, CancellationToken ct = default)
+    {
+        return await _context.Translations
+            .AsNoTracking()
+            .AnyAsync(t => t.Culture == culture && t.Key == key, ct);
+    }
+
+    public async Task<Translation> AddAsync(
         string culture, 
         string key, 
-        string value,
+        string value, 
+        string? description,
+        string createdBy,
         CancellationToken ct = default)
     {
-        await _context.Translations.AddAsync(
-            new Translation(culture, key, value, SystemActors.System), ct);
+        var translation = Translation.Create(
+            culture, 
+            key, 
+            value, 
+            createdBy, 
+            description);
+        
+        await _context.Translations.AddAsync(translation, ct);
+        
+        return translation; // EF populates Id after SaveChangesAsync is called
     }
 
     public async Task SaveChangesAsync(CancellationToken ct = default)

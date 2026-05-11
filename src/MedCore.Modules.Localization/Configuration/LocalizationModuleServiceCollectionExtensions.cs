@@ -2,6 +2,7 @@ namespace MedCore.Modules.Localization.Configuration;
 
 using MedCore.Common.Localization;
 using MedCore.Modules.Localization.Application.Abstractions;
+using MedCore.Modules.Localization.Application.Services;
 using MedCore.Modules.Localization.Infrastructure.Persistence;
 using MedCore.Modules.Localization.Infrastructure.Persistence.Repositories;
 using MedCore.Modules.Localization.Infrastructure.Services;
@@ -31,6 +32,8 @@ internal static class LocalizationModuleServiceCollectionExtensions
             sp.GetRequiredService<DbMessageLocalizer>());
         services.AddSingleton<ILocalizerCache>(sp =>
             sp.GetRequiredService<DbMessageLocalizer>());
+        
+        services.AddScoped<ITranslationService, TranslationService>();
 
         return services;
     }

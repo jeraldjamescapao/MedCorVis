@@ -1,5 +1,6 @@
 namespace MedCore.Modules.Localization.Infrastructure.Persistence;
 
+using MedCore.Common.Authorization;
 using MedCore.Common.Localization;
 using MedCore.Modules.Localization.Application.Abstractions;
 using MedCore.Modules.Localization.Application.Logging;
@@ -58,7 +59,7 @@ internal static class TranslationSeeder
             .GetRequiredService<ILoggerFactory>()
             .CreateLogger(nameof(TranslationSeeder));
 
-        LocalizerLogMessages.TranslationSeedingStarted(logger, null);
+        TranslationLogMessages.TranslationSeedingStarted(logger, null);
 
         var existingKeys = await repository.GetAllKeysAsync();
         
@@ -75,7 +76,7 @@ internal static class TranslationSeeder
                     continue;
                 }
 
-                await repository.AddAsync(culture, key, value);
+                await repository.AddAsync(culture, key, value, string.Empty, SystemActors.System);
                 seeded++;
             }
         }
@@ -83,6 +84,6 @@ internal static class TranslationSeeder
         if (seeded > 0) 
             await repository.SaveChangesAsync();
 
-        LocalizerLogMessages.TranslationSeedingCompleted(logger, seeded, skipped, null);
+        TranslationLogMessages.TranslationSeedingCompleted(logger, seeded, skipped, null);
     }
 }

@@ -2,7 +2,7 @@ namespace MedCore.Modules.Localization.Application.Logging;
 
 using Microsoft.Extensions.Logging;
 
-internal static class LocalizerLogMessages
+internal static class TranslationLogMessages
 {
     public static readonly Action<ILogger, Exception?> TranslationSeedingStarted =
         LoggerMessage.Define(
@@ -39,4 +39,34 @@ internal static class LocalizerLogMessages
             LogLevel.Information,
             new EventId(4006, "TranslationCacheInvalidated"),
             "Translation cache invalidated.");
+    
+    public static readonly Action<ILogger, long, Exception?> TranslationNotFound =
+        LoggerMessage.Define<long>(
+            LogLevel.Warning,
+            new EventId(4007, "TranslationNotFound"),
+            "Translation with ID {Id} was not found.");
+
+    public static readonly Action<ILogger, string, string, Exception?> TranslationDuplicateKey =
+        LoggerMessage.Define<string, string>(
+            LogLevel.Warning,
+            new EventId(4008, "TranslationDuplicateKey"),
+            "Duplicate translation key '{Key}' for culture '{Culture}'.");
+
+    public static readonly Action<ILogger, string, string, Exception?> TranslationCreateFailed =
+        LoggerMessage.Define<string, string>(
+            LogLevel.Error,
+            new EventId(4009, "TranslationCreateFailed"),
+            "Failed to create translation for culture '{Culture}' and key '{Key}'.");
+
+    public static readonly Action<ILogger, long, Exception?> TranslationUpdateFailed =
+        LoggerMessage.Define<long>(
+            LogLevel.Error,
+            new EventId(4010, "TranslationUpdateFailed"),
+            "Failed to update translation with ID {Id}.");
+
+    public static readonly Action<ILogger, long, Exception?> TranslationDeleteFailed =
+        LoggerMessage.Define<long>(
+            LogLevel.Error,
+            new EventId(4011, "TranslationDeleteFailed"),
+            "Failed to soft-delete translation with ID {Id}.");
 }
