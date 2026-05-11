@@ -34,7 +34,7 @@ with enough moving parts to make real architectural decisions matter. I wanted a
   > Note: in clinical systems, name and birth date changes are identity-critical and typically require admin approval. In MedCore, self-service edits are permitted at the account level. Clinical records (future Patients module) will enforce stricter controls.
 - `PUT /api/v1/users/me/phone`: authenticated users can update their phone number (confirmation via SMS is planned, not yet implemented)
 
-### Internationalization (I18N) Foundation
+### Localization Module
 
 - DB-backed translations stored in the `Localization` schema
 - Supported cultures: `en`, `fr`, `de`, `fr-CH`, `de-CH`
@@ -43,9 +43,7 @@ with enough moving parts to make real architectural decisions matter. I wanted a
   fallback to `en`
 - Preferred culture cached per user with a 30-minute sliding expiry
 - Confirmation emails delivered in the user's resolved language
-- Translations updatable without redeployment. Edit a row in the DB and call
-  `POST /api/v1/admin/translations/refresh` to reload the cache immediately.
-- `POST /api/v1/admin/translations/refresh`: Admin only, reloads translation cache
+- `POST /api/v1/admin/translations/cache/refresh`: Admin only, reloads translation cache
 
 ### Tests
 
@@ -144,7 +142,7 @@ dotnet ef database update --project src/MedCore.Modules.Identity/MedCore.Modules
 Apply Localization migrations:
 
 ```bash
-dotnet ef database update --project src/MedCore.Infrastructure/MedCore.Infrastructure.csproj --startup-project src/MedCore.Api/MedCore.Api.csproj --context LocalizationDbContext
+dotnet ef database update --project src/MedCore.Modules.Localization/MedCore.Modules.Localization.csproj --startup-project src/MedCore.Api/MedCore.Api.csproj --context LocalizationDbContext
 ```
 
 ### Run the API
@@ -198,8 +196,8 @@ and override the `Email` section in `appsettings.Development.json`.
 
 ## Status
 
-Actively in development. Identity module and Users module are complete with unit tests.
-Internationalization (I18N) foundation is complete. CodeItems, Patients, Doctors,
+Actively in development. Identity module, Users module, and Localization module are complete.
+Identity and Users modules have unit test coverage. CodeItems, Patients, Doctors,
 and Appointments modules are next.
 
 ## About the Author
