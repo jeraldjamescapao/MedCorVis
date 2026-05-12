@@ -1,0 +1,8 @@
+namespace MedCore.Modules.CodeItems.Application.Contracts.Requests;
+
+using System.ComponentModel.DataAnnotations;
+using MedCore.Modules.CodeItems.Domain;
+
+public sealed record UpdateCategoryRequest(
+    [Required] [Range(1, int.MaxValue)] int SortOrder,
+    [MaxLength(Category.DescriptionMaxLength)] string? Description = null);
