@@ -3,7 +3,6 @@ namespace MedCore.Modules.Localization.Infrastructure.Persistence;
 using MedCore.Common.Authorization;
 using MedCore.Common.Localization;
 using MedCore.Modules.Localization.Application.Abstractions;
-using MedCore.Modules.Localization.Application.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -59,7 +58,7 @@ internal static class TranslationSeeder
             .GetRequiredService<ILoggerFactory>()
             .CreateLogger(nameof(TranslationSeeder));
 
-        TranslationLogMessages.TranslationSeedingStarted(logger, null);
+        TranslationSeederLogMessages.TranslationSeedingStarted(logger, null);
 
         var existingKeys = await repository.GetAllKeysAsync();
         
@@ -84,6 +83,6 @@ internal static class TranslationSeeder
         if (seeded > 0) 
             await repository.SaveChangesAsync();
 
-        TranslationLogMessages.TranslationSeedingCompleted(logger, seeded, skipped, null);
+        TranslationSeederLogMessages.TranslationSeedingCompleted(logger, seeded, skipped, null);
     }
 }

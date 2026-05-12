@@ -4,18 +4,6 @@ using Microsoft.Extensions.Logging;
 
 internal static class TranslationLogMessages
 {
-    public static readonly Action<ILogger, Exception?> TranslationSeedingStarted =
-        LoggerMessage.Define(
-            LogLevel.Information,
-            new EventId(4001, "TranslationSeedingStarted"),
-            "Seeding translations...");
-
-    public static readonly Action<ILogger, int, int, Exception?> TranslationSeedingCompleted =
-        LoggerMessage.Define<int, int>(
-            LogLevel.Information,
-            new EventId(4002, "TranslationSeedingCompleted"),
-            "Translation seeding complete. Seeded: {Seeded}, Skipped: {Skipped}.");
-    
     public static readonly Action<ILogger, string, string, Exception?> TranslationCacheEmpty =
         LoggerMessage.Define<string, string>(
             LogLevel.Warning,
