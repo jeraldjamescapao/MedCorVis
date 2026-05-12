@@ -29,6 +29,23 @@ internal sealed class CodeItemTranslationConfiguration : IEntityTypeConfiguratio
         builder.Property(x => x.Label)
             .IsRequired()
             .HasMaxLength(CodeItemTranslation.LabelMaxLength);
+        
+        builder.Property(x => x.Description)
+            .HasMaxLength(CodeItemTranslation.DescriptionMaxLength);
+
+        builder.Property(x => x.IsSystemDefined)
+            .IsRequired()
+            .HasDefaultValue(false);
+
+        builder.Property(x => x.IsDeleted)
+            .IsRequired()
+            .HasDefaultValue(false);
+
+        builder.Property(x => x.DeletedAtUtc)
+            .HasColumnType("datetimeoffset");
+
+        builder.Property(x => x.DeletedBy)
+            .HasMaxLength(100);
 
         builder.Property(x => x.IsActive)
             .IsRequired()
@@ -54,5 +71,8 @@ internal sealed class CodeItemTranslationConfiguration : IEntityTypeConfiguratio
 
         builder.HasIndex(x => x.IsActive)
             .HasDatabaseName("IX_Translations_IsActive");
+        
+        builder.HasIndex(x => x.IsDeleted)
+            .HasDatabaseName("IX_Translations_IsDeleted");
     }
 }

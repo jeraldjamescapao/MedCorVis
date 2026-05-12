@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MedCore.Modules.CodeItems.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(CodeItemsDbContext))]
-    [Migration("20260512081124_InitialCodeItemsSchema")]
+    [Migration("20260512130042_InitialCodeItemsSchema")]
     partial class InitialCodeItemsSchema
     {
         /// <inheritdoc />
@@ -47,6 +47,13 @@ namespace MedCore.Modules.CodeItems.Infrastructure.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<DateTimeOffset?>("DeletedAtUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("DeletedBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("Description")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
@@ -55,6 +62,26 @@ namespace MedCore.Modules.CodeItems.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
+
+                    b.Property<bool>("IsDeletable")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("IsEditable")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsSystemDefined")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<DateTimeOffset?>("ModifiedAtUtc")
                         .HasColumnType("datetimeoffset");
@@ -76,6 +103,9 @@ namespace MedCore.Modules.CodeItems.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("IsActive")
                         .HasDatabaseName("IX_Categories_IsActive");
+
+                    b.HasIndex("IsDeleted")
+                        .HasDatabaseName("IX_Categories_IsDeleted");
 
                     b.ToTable("Categories", "CodeItems");
                 });
@@ -104,6 +134,13 @@ namespace MedCore.Modules.CodeItems.Infrastructure.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<DateTimeOffset?>("DeletedAtUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("DeletedBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("Description")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
@@ -112,6 +149,26 @@ namespace MedCore.Modules.CodeItems.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
+
+                    b.Property<bool>("IsDeletable")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("IsEditable")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsSystemDefined")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<DateTimeOffset?>("ModifiedAtUtc")
                         .HasColumnType("datetimeoffset");
@@ -129,6 +186,9 @@ namespace MedCore.Modules.CodeItems.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("IsActive")
                         .HasDatabaseName("IX_Items_IsActive");
+
+                    b.HasIndex("IsDeleted")
+                        .HasDatabaseName("IX_Items_IsDeleted");
 
                     b.HasIndex("CategoryId", "Code")
                         .IsUnique()
@@ -158,6 +218,17 @@ namespace MedCore.Modules.CodeItems.Infrastructure.Persistence.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
+                    b.Property<DateTimeOffset?>("DeletedAtUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("DeletedBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<long>("EntityId")
                         .HasColumnType("bigint");
 
@@ -170,6 +241,16 @@ namespace MedCore.Modules.CodeItems.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("IsSystemDefined")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Label")
                         .IsRequired()
@@ -187,6 +268,9 @@ namespace MedCore.Modules.CodeItems.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("IsActive")
                         .HasDatabaseName("IX_Translations_IsActive");
+
+                    b.HasIndex("IsDeleted")
+                        .HasDatabaseName("IX_Translations_IsDeleted");
 
                     b.HasIndex("EntityType", "EntityId", "Culture")
                         .IsUnique()

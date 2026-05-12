@@ -29,6 +29,28 @@ internal sealed class CategoryConfiguration : IEntityTypeConfiguration<Category>
         builder.Property(x => x.SortOrder)
             .IsRequired()
             .HasDefaultValue(0);
+        
+        builder.Property(x => x.IsSystemDefined)
+            .IsRequired()
+            .HasDefaultValue(false);
+
+        builder.Property(x => x.IsEditable)
+            .IsRequired()
+            .HasDefaultValue(true);
+
+        builder.Property(x => x.IsDeletable)
+            .IsRequired()
+            .HasDefaultValue(true);
+
+        builder.Property(x => x.IsDeleted)
+            .IsRequired()
+            .HasDefaultValue(false);
+
+        builder.Property(x => x.DeletedAtUtc)
+            .HasColumnType("datetimeoffset");
+
+        builder.Property(x => x.DeletedBy)
+            .HasMaxLength(100);
 
         builder.Property(x => x.CreatedAtUtc)
             .HasColumnType("datetimeoffset")
@@ -55,5 +77,8 @@ internal sealed class CategoryConfiguration : IEntityTypeConfiguration<Category>
 
         builder.HasIndex(x => x.IsActive)
             .HasDatabaseName("IX_Categories_IsActive");
+        
+        builder.HasIndex(x => x.IsDeleted)
+            .HasDatabaseName("IX_Categories_IsDeleted");
     }
 }

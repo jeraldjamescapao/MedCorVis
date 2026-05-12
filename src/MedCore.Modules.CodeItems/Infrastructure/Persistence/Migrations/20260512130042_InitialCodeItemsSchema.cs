@@ -23,8 +23,14 @@ namespace MedCore.Modules.CodeItems.Infrastructure.Persistence.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Code = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
                     SortOrder = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    IsSystemDefined = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    IsEditable = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    IsDeletable = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    DeletedAtUtc = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    DeletedBy = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     CreatedAtUtc = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     ModifiedAtUtc = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
@@ -46,7 +52,12 @@ namespace MedCore.Modules.CodeItems.Infrastructure.Persistence.Migrations
                     EntityId = table.Column<long>(type: "bigint", nullable: false),
                     Culture = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     Label = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    IsSystemDefined = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    DeletedAtUtc = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    DeletedBy = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     CreatedAtUtc = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     ModifiedAtUtc = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
@@ -67,8 +78,14 @@ namespace MedCore.Modules.CodeItems.Infrastructure.Persistence.Migrations
                     CategoryId = table.Column<long>(type: "bigint", nullable: false),
                     Code = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
                     SortOrder = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    IsSystemDefined = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    IsEditable = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    IsDeletable = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    DeletedAtUtc = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    DeletedBy = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     CreatedAtUtc = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     ModifiedAtUtc = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
@@ -100,6 +117,12 @@ namespace MedCore.Modules.CodeItems.Infrastructure.Persistence.Migrations
                 column: "IsActive");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Categories_IsDeleted",
+                schema: "CodeItems",
+                table: "Categories",
+                column: "IsDeleted");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Items_CategoryId_Code",
                 schema: "CodeItems",
                 table: "Items",
@@ -113,6 +136,12 @@ namespace MedCore.Modules.CodeItems.Infrastructure.Persistence.Migrations
                 column: "IsActive");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Items_IsDeleted",
+                schema: "CodeItems",
+                table: "Items",
+                column: "IsDeleted");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Translations_EntityType_EntityId_Culture",
                 schema: "CodeItems",
                 table: "Translations",
@@ -124,6 +153,12 @@ namespace MedCore.Modules.CodeItems.Infrastructure.Persistence.Migrations
                 schema: "CodeItems",
                 table: "Translations",
                 column: "IsActive");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Translations_IsDeleted",
+                schema: "CodeItems",
+                table: "Translations",
+                column: "IsDeleted");
         }
 
         /// <inheritdoc />

@@ -32,6 +32,28 @@ internal sealed class CodeItemConfiguration : IEntityTypeConfiguration<CodeItem>
         builder.Property(x => x.SortOrder)
             .IsRequired()
             .HasDefaultValue(0);
+        
+        builder.Property(x => x.IsSystemDefined)
+            .IsRequired()
+            .HasDefaultValue(false);
+
+        builder.Property(x => x.IsEditable)
+            .IsRequired()
+            .HasDefaultValue(true);
+
+        builder.Property(x => x.IsDeletable)
+            .IsRequired()
+            .HasDefaultValue(true);
+
+        builder.Property(x => x.IsDeleted)
+            .IsRequired()
+            .HasDefaultValue(false);
+
+        builder.Property(x => x.DeletedAtUtc)
+            .HasColumnType("datetimeoffset");
+
+        builder.Property(x => x.DeletedBy)
+            .HasMaxLength(100);
 
         builder.Property(x => x.CreatedAtUtc)
             .HasColumnType("datetimeoffset")
@@ -53,5 +75,8 @@ internal sealed class CodeItemConfiguration : IEntityTypeConfiguration<CodeItem>
 
         builder.HasIndex(x => x.IsActive)
             .HasDatabaseName("IX_Items_IsActive");
+        
+        builder.HasIndex(x => x.IsDeleted)
+            .HasDatabaseName("IX_Items_IsDeleted");
     }
 }
