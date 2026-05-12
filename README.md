@@ -173,7 +173,7 @@ Open the file, start the API first, then set `@AccessToken` to a token from a lo
 ### Email (development)
 
 The app uses Ethereal Email for development. No real emails are delivered.
-Credentials in `appsettings.json` are intentional for reviewer convenience.
+Credentials in `appsettings.Example.json` are intentional for reviewer convenience.
 To use your own Ethereal account, create a free one at https://ethereal.email
 and override the `Email` section in `appsettings.Development.json`.
 
