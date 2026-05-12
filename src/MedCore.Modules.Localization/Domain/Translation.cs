@@ -15,6 +15,7 @@ internal sealed class Translation : IAuditableEntity
     public string Value { get; private set; } = null!;
     public string? Description { get; private set; }
     public bool IsActive { get; private set; }
+    public bool IsSystemDefined { get; private set; }
     public DateTimeOffset CreatedAtUtc { get; private set; }
     public string CreatedBy { get; private set; } = null!;
     public DateTimeOffset? ModifiedAtUtc { get; private set; }
@@ -27,13 +28,15 @@ internal sealed class Translation : IAuditableEntity
         string key, 
         string value, 
         string createdBy, 
-        string? description = null)
+        string? description = null,
+        bool isSystemDefined = false)
     {
         Culture = culture;
         Key = key;
         Value = value;
         Description = description;
         IsActive = true;
+        IsSystemDefined = isSystemDefined;
         CreatedAtUtc = DateTimeOffset.UtcNow;
         CreatedBy = createdBy;
     }
@@ -43,7 +46,8 @@ internal sealed class Translation : IAuditableEntity
         string key,
         string value,
         string createdBy,
-        string? description = null)
+        string? description = null,
+        bool isSystemDefined = false)
     {
         if (string.IsNullOrWhiteSpace(culture))
             throw new DomainException("DOMAIN_TRANSLATION_INVALID_CULTURE", "Culture is required.");
@@ -69,7 +73,8 @@ internal sealed class Translation : IAuditableEntity
             trimmedKey,
             trimmedValue,
             createdBy,
-            string.IsNullOrWhiteSpace(description) ? null : description.Trim());
+            string.IsNullOrWhiteSpace(description) ? null : description.Trim(),
+            isSystemDefined);
     }
     
     public void Update(string value, string? description, string modifiedBy)

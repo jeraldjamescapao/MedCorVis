@@ -73,6 +73,7 @@ internal sealed class TranslationRepository : ITranslationRepository
         string value, 
         string? description,
         string createdBy,
+        bool isSystemDefined = false,
         CancellationToken ct = default)
     {
         var translation = Translation.Create(
@@ -80,7 +81,8 @@ internal sealed class TranslationRepository : ITranslationRepository
             key, 
             value, 
             createdBy, 
-            description);
+            description,
+            isSystemDefined);
         
         await _context.Translations.AddAsync(translation, ct);
         

@@ -7,6 +7,7 @@ public sealed record TranslationResponse(
     string Value,
     string? Description,
     bool IsActive,
+    bool IsSystemDefined,
     DateTimeOffset CreatedAtUtc,
     string CreatedBy,
     DateTimeOffset? ModifiedAtUtc,

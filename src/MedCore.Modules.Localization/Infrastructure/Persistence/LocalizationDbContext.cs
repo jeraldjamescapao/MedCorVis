@@ -43,6 +43,10 @@ internal sealed class LocalizationDbContext : DbContext
             entity.Property(x => x.IsActive)
                 .IsRequired()
                 .HasDefaultValue(true);
+            
+            entity.Property(x => x.IsSystemDefined)
+                .IsRequired()
+                .HasDefaultValue(false);
 
             entity.Property(x => x.CreatedAtUtc)
                 .HasColumnType("datetimeoffset")

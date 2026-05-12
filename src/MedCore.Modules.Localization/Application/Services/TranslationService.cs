@@ -68,6 +68,7 @@ internal sealed class TranslationService : ITranslationService
             request.Value, 
             request.Description,
             _currentUserService.UserId, 
+            false,
             ct);
 
         try
@@ -160,6 +161,7 @@ internal sealed class TranslationService : ITranslationService
             t.Value, 
             t.Description, 
             t.IsActive,
+            t.IsSystemDefined,
             t.CreatedAtUtc, 
             t.CreatedBy, 
             t.ModifiedAtUtc, 

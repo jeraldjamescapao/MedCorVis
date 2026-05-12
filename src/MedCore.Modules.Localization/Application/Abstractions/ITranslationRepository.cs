@@ -9,6 +9,6 @@ internal interface ITranslationRepository
     Task<IReadOnlyList<Translation>> GetAllAsync(string? culture, CancellationToken ct = default);
     Task<Translation?> GetByIdAsync(long id, CancellationToken ct = default);
     Task<bool> ExistsAsync(string culture, string key, CancellationToken ct = default);
-    Task<Translation> AddAsync(string culture, string key, string value, string? description, string createdBy, CancellationToken ct = default);
+    Task<Translation> AddAsync(string culture, string key, string value, string? description, string createdBy, bool isSystemDefined = false, CancellationToken ct = default);
     Task SaveChangesAsync(CancellationToken ct = default);
 }

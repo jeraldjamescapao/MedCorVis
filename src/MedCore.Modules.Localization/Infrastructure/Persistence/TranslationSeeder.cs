@@ -75,7 +75,14 @@ internal static class TranslationSeeder
                     continue;
                 }
 
-                await repository.AddAsync(culture, key, value, null, SystemActors.System);
+                await repository.AddAsync(
+                    culture, 
+                    key, 
+                    value, 
+                    null, 
+                    SystemActors.System, 
+                    true);
+                
                 seeded++;
             }
         }

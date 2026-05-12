@@ -28,14 +28,20 @@ public sealed class CreateTests : TranslationServiceTestBase
         result.Error!.Code.Should().Be("LOCALIZATION_UNSUPPORTED_CULTURE");
         await Repository
             .DidNotReceive()
-            .ExistsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
+            .ExistsAsync(
+                Arg.Any<string>(), 
+                Arg.Any<string>(), 
+                Arg.Any<CancellationToken>());
     }
     
     [Fact]
     public async Task CreateAsync_DuplicateKey_ReturnsConflict()
     {
         Repository
-            .ExistsAsync(ValidRequest.Culture, ValidRequest.Key, Arg.Any<CancellationToken>())
+            .ExistsAsync(
+                ValidRequest.Culture, 
+                ValidRequest.Key, 
+                Arg.Any<CancellationToken>())
             .Returns(true);
 
         var result = await Sut.CreateAsync(ValidRequest);
@@ -46,8 +52,13 @@ public sealed class CreateTests : TranslationServiceTestBase
         await Repository
             .DidNotReceive()
             .AddAsync(
-                Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(),
-                Arg.Any<string?>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
+                Arg.Any<string>(), 
+                Arg.Any<string>(), 
+                Arg.Any<string>(),
+                Arg.Any<string?>(), 
+                Arg.Any<string>(), 
+                Arg.Any<bool>(),
+                Arg.Any<CancellationToken>());
     }
     
     [Fact]
@@ -57,13 +68,21 @@ public sealed class CreateTests : TranslationServiceTestBase
             ValidRequest.Culture, ValidRequest.Key, ValidRequest.Value);
 
         Repository
-            .ExistsAsync(ValidRequest.Culture, ValidRequest.Key, Arg.Any<CancellationToken>())
+            .ExistsAsync(
+                ValidRequest.Culture, 
+                ValidRequest.Key, 
+                Arg.Any<CancellationToken>())
             .Returns(false);
 
         Repository
             .AddAsync(
-                ValidRequest.Culture, ValidRequest.Key, ValidRequest.Value,
-                ValidRequest.Description, Arg.Any<string>(), Arg.Any<CancellationToken>())
+                ValidRequest.Culture, 
+                ValidRequest.Key, 
+                ValidRequest.Value,
+                ValidRequest.Description, 
+                Arg.Any<string>(), 
+                false, 
+                Arg.Any<CancellationToken>())
             .Returns(translation);
 
         Repository
@@ -85,13 +104,21 @@ public sealed class CreateTests : TranslationServiceTestBase
             ValidRequest.Culture, ValidRequest.Key, ValidRequest.Value);
 
         Repository
-            .ExistsAsync(ValidRequest.Culture, ValidRequest.Key, Arg.Any<CancellationToken>())
+            .ExistsAsync(
+                ValidRequest.Culture, 
+                ValidRequest.Key, 
+                Arg.Any<CancellationToken>())
             .Returns(false);
 
         Repository
             .AddAsync(
-                ValidRequest.Culture, ValidRequest.Key, ValidRequest.Value,
-                ValidRequest.Description, Arg.Any<string>(), Arg.Any<CancellationToken>())
+                ValidRequest.Culture, 
+                ValidRequest.Key, 
+                ValidRequest.Value,
+                ValidRequest.Description, 
+                Arg.Any<string>(), 
+                Arg.Any<bool>(), 
+                Arg.Any<CancellationToken>())
             .Returns(translation);
 
         var result = await Sut.CreateAsync(ValidRequest);
