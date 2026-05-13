@@ -39,7 +39,8 @@ internal sealed class EmailService : IEmailService
         {
             // DEV ONLY: bypasses SSL certificate revocation check failures on local machines.
             // Remove this line in production and ensure the server certificate is fully trusted.
-            smtp.ServerCertificateValidationCallback = (s, c, h, e) => true;
+            if (_settings.AllowInvalidCertificate) 
+                smtp.ServerCertificateValidationCallback = (_, _, _, _) => true;
             
             await smtp.ConnectAsync(_settings.Host, _settings.Port, secureSocket, ct);
             await smtp.AuthenticateAsync(_settings.Username, _settings.Password, ct);

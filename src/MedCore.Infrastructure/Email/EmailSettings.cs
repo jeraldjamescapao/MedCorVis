@@ -12,6 +12,6 @@ internal sealed class EmailSettings
     [Required] public string Password { get; init; } = null!;
     [Required] [EmailAddress] public string FromAddress { get; init; } = null!;
     [Required] public string FromName { get; init; } = null!;
-    
     public string SecureSocket { get; init; } = "StartTls"; // default
+    public bool AllowInvalidCertificate { get; init; } = false;
 }
