@@ -1,4 +1,4 @@
-namespace MedCore.Modules.Users.Application.Contracts;
+namespace MedCore.Modules.Users.Application.Contracts.Responses;
 
 public sealed record UserResponse(
     Guid Id,

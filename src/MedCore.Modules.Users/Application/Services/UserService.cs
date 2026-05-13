@@ -7,7 +7,9 @@ using MedCore.Common.Localization;
 using MedCore.Common.Results;
 using MedCore.Modules.Identity.Domain.Users;
 using MedCore.Modules.Users.Application.Abstractions;
-using MedCore.Modules.Users.Application.Contracts;
+using MedCore.Modules.Users.Application.Contracts.Requests;
+using MedCore.Modules.Users.Application.Contracts.Responses;
+using MedCore.Modules.Users.Application.Errors;
 using MedCore.Modules.Users.Application.Logging;
 
 internal sealed class UserService : IUserService

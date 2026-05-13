@@ -1,7 +1,8 @@
 namespace MedCore.Modules.Users.Application.Abstractions;
 
 using MedCore.Common.Results;
-using MedCore.Modules.Users.Application.Contracts;
+using MedCore.Modules.Users.Application.Contracts.Requests;
+using MedCore.Modules.Users.Application.Contracts.Responses;
 
 public interface IUserService
 {

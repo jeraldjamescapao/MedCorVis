@@ -1,4 +1,4 @@
-namespace MedCore.Modules.Users.Application.Contracts;
+namespace MedCore.Modules.Users.Application.Errors;
 
 using MedCore.Common.Results;
 

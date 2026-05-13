@@ -3,7 +3,7 @@ namespace MedCore.Modules.Users.Tests.Application.Services.UserServiceTests;
 using FluentAssertions;
 using MedCore.Common.Results;
 using MedCore.Modules.Identity.Domain.Users;
-using MedCore.Modules.Users.Application.Contracts;
+using MedCore.Modules.Users.Application.Contracts.Requests;
 using Microsoft.AspNetCore.Identity;
 using NSubstitute;
 using Xunit;

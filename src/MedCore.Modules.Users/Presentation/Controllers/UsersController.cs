@@ -7,7 +7,9 @@ using MedCore.Common.Controllers;
 using MedCore.Common.Results;
 using MedCore.Common.Services;
 using MedCore.Modules.Users.Application.Abstractions;
-using MedCore.Modules.Users.Application.Contracts;
+using MedCore.Modules.Users.Application.Contracts.Requests;
+using MedCore.Modules.Users.Application.Contracts.Responses;
+using MedCore.Modules.Users.Application.Errors;
 
 [Authorize]
 [ApiVersion("1")]

@@ -1,4 +1,4 @@
-namespace MedCore.Modules.Users.Application.Contracts;
+namespace MedCore.Modules.Users.Application.Contracts.Requests;
 
 using MedCore.Common.Validations;
 using System.ComponentModel.DataAnnotations;
