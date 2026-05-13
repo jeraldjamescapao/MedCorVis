@@ -16,7 +16,7 @@ public sealed class DeleteItemTests : CodeItemServiceTestBase
             .GetItemByIdAsync(69, Arg.Any<CancellationToken>())
             .Returns((CodeItem?)null);
 
-        var result = await Sut.DeleteItemAsync(69);
+        var result = await Sut.DeleteItemAsync(1, 69);
 
         result.IsFailure.Should().BeTrue();
         result.ErrorType.Should().Be(ResultErrorType.NotFound);
@@ -32,7 +32,7 @@ public sealed class DeleteItemTests : CodeItemServiceTestBase
             .GetItemByIdAsync(1, Arg.Any<CancellationToken>())
             .Returns(item);
 
-        var result = await Sut.DeleteItemAsync(1);
+        var result = await Sut.DeleteItemAsync(1, 1);
 
         result.IsFailure.Should().BeTrue();
         result.ErrorType.Should().Be(ResultErrorType.UnprocessableEntity);
@@ -59,7 +59,7 @@ public sealed class DeleteItemTests : CodeItemServiceTestBase
                 Arg.Any<CancellationToken>())
             .Returns([ translation1, translation2, translation3]);
 
-        var result = await Sut.DeleteItemAsync(1);
+        var result = await Sut.DeleteItemAsync(1, 1);
 
         result.IsSuccess.Should().BeTrue();
         item.IsDeleted.Should().BeTrue();
@@ -74,6 +74,25 @@ public sealed class DeleteItemTests : CodeItemServiceTestBase
                 Arg.Any<CancellationToken>());
         await Repository
             .Received(1)
+            .SaveChangesAsync(Arg.Any<CancellationToken>());
+    }
+    
+    [Fact]
+    public async Task DeleteItemAsync_ItemBelongsToDifferentCategory_ReturnsNotFound()
+    {
+        var item = CreateItem(categoryId: 99);
+
+        Repository
+            .GetItemByIdAsync(1, Arg.Any<CancellationToken>())
+            .Returns(item);
+
+        var result = await Sut.DeleteItemAsync(categoryId: 1, id: 1);
+
+        result.IsFailure.Should().BeTrue();
+        result.ErrorType.Should().Be(ResultErrorType.NotFound);
+        result.Error!.Code.Should().Be("CODEITEMS_ITEM_NOT_FOUND");
+        await Repository
+            .DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 }

@@ -138,6 +138,9 @@ only — no EF navigation properties across module boundaries.
 `ICurrentUserService` (in `MedCore.Common`) is injected wherever business logic needs
 the caller's identity. User ID is always resolved from the validated JWT token.
 It is never accepted from a request body or URL parameter (IDOR prevention).
+Nested routes enforce parent ownership at the service layer — a child resource is
+only accessible when its stored parent ID matches the route (e.g. item.CategoryId
+must equal the categoryId in the URL). This applies to all modules.
 
 ## Identity Module
 
@@ -186,6 +189,10 @@ The module exposes two controllers:
 - `CodeItemsConsumerController` — read-only consumer endpoint. Returns active items
   for a given category code with culture-resolved labels. Falls back to English when
   no label exists for the requested culture, then falls back to the item code itself.
+
+All item operations on nested routes (`/categories/{categoryId}/items/{id}`)
+verify that the item's `CategoryId` matches the route parameter before proceeding.
+A mismatch returns `404 Not Found` to avoid confirming the resource exists elsewhere.
 
 Items and categories carry `IsSystemDefined`, `IsEditable`, and `IsDeletable` flags.
 System-defined records are seeded and protected from accidental deletion. Admins can

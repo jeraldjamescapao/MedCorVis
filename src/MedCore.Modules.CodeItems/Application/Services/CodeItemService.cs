@@ -182,11 +182,11 @@ internal sealed class CodeItemService : ICodeItemService
     }
     
     public async Task<Result<ItemResponse>> GetItemByIdAsync(
-        long id, CancellationToken ct = default)
+        long categoryId, long id, CancellationToken ct = default)
     {
         var item = await _repository.GetItemByIdAsync(id, ct);
-        
-        if (item is not null) 
+
+        if (item is not null && item.CategoryId == categoryId) 
             return Result<ItemResponse>.Success(MapItem(item));
         
         CodeItemLogMessages.ItemNotFound(_logger, id, null);
@@ -226,10 +226,11 @@ internal sealed class CodeItemService : ICodeItemService
     }
     
     public async Task<Result<ItemResponse>> UpdateItemAsync(
-        long id, UpdateItemRequest request, CancellationToken ct = default)
+        long categoryId, long id, UpdateItemRequest request, CancellationToken ct = default)
     {
         var item = await _repository.GetItemByIdAsync(id, ct);
-        if (item is null)
+
+        if (item is null || item.CategoryId != categoryId)
         {
             CodeItemLogMessages.ItemNotFound(_logger, id, null);
             return Result<ItemResponse>.NotFound(CodeItemErrors.ItemNotFound);
@@ -245,10 +246,11 @@ internal sealed class CodeItemService : ICodeItemService
     }
     
     public async Task<Result<bool>> ActivateItemAsync(
-        long id, CancellationToken ct = default)
+        long categoryId, long id, CancellationToken ct = default)
     {
         var item = await _repository.GetItemByIdAsync(id, ct);
-        if (item is null)
+
+        if (item is null || item.CategoryId != categoryId)
         {
             CodeItemLogMessages.ItemNotFound(_logger, id, null);
             return Result<bool>.NotFound(CodeItemErrors.ItemNotFound);
@@ -261,10 +263,11 @@ internal sealed class CodeItemService : ICodeItemService
     }
     
     public async Task<Result<bool>> DeactivateItemAsync(
-        long id, CancellationToken ct = default)
+        long categoryId, long id, CancellationToken ct = default)
     {
         var item = await _repository.GetItemByIdAsync(id, ct);
-        if (item is null)
+
+        if (item is null || item.CategoryId != categoryId)
         {
             CodeItemLogMessages.ItemNotFound(_logger, id, null);
             return Result<bool>.NotFound(CodeItemErrors.ItemNotFound);
@@ -277,10 +280,11 @@ internal sealed class CodeItemService : ICodeItemService
     }
     
     public async Task<Result<bool>> DeleteItemAsync(
-        long id, CancellationToken ct = default)
+        long categoryId, long id, CancellationToken ct = default)
     {
         var item = await _repository.GetItemByIdAsync(id, ct);
-        if (item is null)
+
+        if (item is null || item.CategoryId != categoryId)
         {
             CodeItemLogMessages.ItemNotFound(_logger, id, null);
             return Result<bool>.NotFound(CodeItemErrors.ItemNotFound);
@@ -362,10 +366,11 @@ internal sealed class CodeItemService : ICodeItemService
     }
     
     public async Task<Result<IReadOnlyList<TranslationResponse>>> GetItemTranslationsAsync(
-        long itemId, CancellationToken ct = default)
+        long categoryId, long itemId, CancellationToken ct = default)
     {
         var item = await _repository.GetItemByIdAsync(itemId, ct);
-        if (item is null)
+
+        if (item is null || item.CategoryId != categoryId)
         {
             CodeItemLogMessages.ItemNotFound(_logger, itemId, null);
             return Result<IReadOnlyList<TranslationResponse>>.NotFound(CodeItemErrors.ItemNotFound);
@@ -379,15 +384,15 @@ internal sealed class CodeItemService : ICodeItemService
     }
     
     public async Task<Result<TranslationResponse>> UpsertItemTranslationAsync(
-        long itemId, string culture, UpsertTranslationRequest request,
+        long categoryId, long itemId, string culture, UpsertTranslationRequest request,
         CancellationToken ct = default)
     {
         if (!SupportedCultures.All.Contains(culture))
             return Result<TranslationResponse>.Validation(CodeItemErrors.UnsupportedCulture);
 
         var item = await _repository.GetItemByIdAsync(itemId, ct);
-        
-        if (item is not null)
+
+        if (item is not null && item.CategoryId == categoryId)
             return await UpsertTranslationAsync(
                 CodeItemTranslation.EntityTypeItem, itemId, culture, request, ct);
         

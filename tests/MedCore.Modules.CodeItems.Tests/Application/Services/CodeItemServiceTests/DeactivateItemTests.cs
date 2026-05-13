@@ -15,7 +15,7 @@ public sealed class DeactivateItemTests : CodeItemServiceTestBase
             .GetItemByIdAsync(69, Arg.Any<CancellationToken>())
             .Returns((CodeItem?)null);
 
-        var result = await Sut.DeactivateItemAsync(69);
+        var result = await Sut.DeactivateItemAsync(1, 69);
 
         result.IsFailure.Should().BeTrue();
         result.ErrorType.Should().Be(ResultErrorType.NotFound);
@@ -31,12 +31,31 @@ public sealed class DeactivateItemTests : CodeItemServiceTestBase
             .GetItemByIdAsync(1, Arg.Any<CancellationToken>())
             .Returns(item);
 
-        var result = await Sut.DeactivateItemAsync(1);
+        var result = await Sut.DeactivateItemAsync(1, 1);
 
         result.IsSuccess.Should().BeTrue();
         item.IsActive.Should().BeFalse();
         await Repository
             .Received(1)
+            .SaveChangesAsync(Arg.Any<CancellationToken>());
+    }
+    
+    [Fact]
+    public async Task DeactivateItemAsync_ItemBelongsToDifferentCategory_ReturnsNotFound()
+    {
+        var item = CreateItem(categoryId: 99);
+
+        Repository
+            .GetItemByIdAsync(1, Arg.Any<CancellationToken>())
+            .Returns(item);
+
+        var result = await Sut.DeactivateItemAsync(categoryId: 1, id: 1);
+
+        result.IsFailure.Should().BeTrue();
+        result.ErrorType.Should().Be(ResultErrorType.NotFound);
+        result.Error!.Code.Should().Be("CODEITEMS_ITEM_NOT_FOUND");
+        await Repository
+            .DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 }

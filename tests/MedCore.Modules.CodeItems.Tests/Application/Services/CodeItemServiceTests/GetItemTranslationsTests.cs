@@ -15,7 +15,7 @@ public sealed class GetItemTranslationsTests : CodeItemServiceTestBase
             .GetItemByIdAsync(69, Arg.Any<CancellationToken>())
             .Returns((CodeItem?)null);
 
-        var result = await Sut.GetItemTranslationsAsync(69);
+        var result = await Sut.GetItemTranslationsAsync(1, 69);
 
         result.IsFailure.Should().BeTrue();
         result.ErrorType.Should().Be(ResultErrorType.NotFound);
@@ -36,7 +36,7 @@ public sealed class GetItemTranslationsTests : CodeItemServiceTestBase
                 Arg.Any<CancellationToken>())
             .Returns([]);
 
-        var result = await Sut.GetItemTranslationsAsync(1);
+        var result = await Sut.GetItemTranslationsAsync(1, 1);
 
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().BeEmpty();
@@ -60,9 +60,25 @@ public sealed class GetItemTranslationsTests : CodeItemServiceTestBase
                 CreateTranslation(CodeItemTranslation.EntityTypeItem, 1, "de")
             ]);
 
-        var result = await Sut.GetItemTranslationsAsync(1);
+        var result = await Sut.GetItemTranslationsAsync(1, 1);
 
         result.IsSuccess.Should().BeTrue();
         result.Value!.Should().HaveCount(3);
+    }
+    
+    [Fact]
+    public async Task GetItemTranslationsAsync_ItemBelongsToDifferentCategory_ReturnsNotFound()
+    {
+        var item = CreateItem(categoryId: 99);
+
+        Repository
+            .GetItemByIdAsync(1, Arg.Any<CancellationToken>())
+            .Returns(item);
+
+        var result = await Sut.GetItemTranslationsAsync(categoryId: 1, itemId: 1);
+
+        result.IsFailure.Should().BeTrue();
+        result.ErrorType.Should().Be(ResultErrorType.NotFound);
+        result.Error!.Code.Should().Be("CODEITEMS_ITEM_NOT_FOUND");
     }
 }

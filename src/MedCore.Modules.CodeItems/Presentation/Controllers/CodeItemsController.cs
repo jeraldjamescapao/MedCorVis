@@ -106,7 +106,7 @@ public sealed class CodeItemsController : BaseApiController
     [HttpGet("categories/{categoryId:long}/items/{id:long}")]
     public async Task<IActionResult> GetItemByIdAsync(long categoryId, long id, CancellationToken ct)
     {
-        var result = await _service.GetItemByIdAsync(id, ct);
+        var result = await _service.GetItemByIdAsync(categoryId, id, ct);
         return ToActionResult(result);
     }
     
@@ -124,14 +124,14 @@ public sealed class CodeItemsController : BaseApiController
     public async Task<IActionResult> UpdateItemAsync(
         long categoryId, long id, [FromBody] UpdateItemRequest request, CancellationToken ct)
     {
-        var result = await _service.UpdateItemAsync(id, request, ct);
+        var result = await _service.UpdateItemAsync(categoryId, id, request, ct);
         return ToActionResult(result);
     }
     
     [HttpPut("categories/{categoryId:long}/items/{id:long}/activate")]
     public async Task<IActionResult> ActivateItemAsync(long categoryId, long id, CancellationToken ct)
     {
-        var result = await _service.ActivateItemAsync(id, ct);
+        var result = await _service.ActivateItemAsync(categoryId, id, ct);
         if (result.IsFailure) return ToActionResult(result);
 
         return NoContent();
@@ -140,7 +140,7 @@ public sealed class CodeItemsController : BaseApiController
     [HttpPut("categories/{categoryId:long}/items/{id:long}/deactivate")]
     public async Task<IActionResult> DeactivateItemAsync(long categoryId, long id, CancellationToken ct)
     {
-        var result = await _service.DeactivateItemAsync(id, ct);
+        var result = await _service.DeactivateItemAsync(categoryId, id, ct);
         if (result.IsFailure) return ToActionResult(result);
 
         return NoContent();
@@ -149,7 +149,7 @@ public sealed class CodeItemsController : BaseApiController
     [HttpDelete("categories/{categoryId:long}/items/{id:long}")]
     public async Task<IActionResult> DeleteItemAsync(long categoryId, long id, CancellationToken ct)
     {
-        var result = await _service.DeleteItemAsync(id, ct);
+        var result = await _service.DeleteItemAsync(categoryId, id, ct);
         if (result.IsFailure) return ToActionResult(result);
 
         return NoContent();
@@ -189,7 +189,7 @@ public sealed class CodeItemsController : BaseApiController
     public async Task<IActionResult> GetItemTranslationsAsync(
         long categoryId, long itemId, CancellationToken ct)
     {
-        var result = await _service.GetItemTranslationsAsync(itemId, ct);
+        var result = await _service.GetItemTranslationsAsync(categoryId, itemId, ct);
         return ToActionResult(result);
     }
     
@@ -198,7 +198,7 @@ public sealed class CodeItemsController : BaseApiController
         long categoryId, long itemId, string culture,
         [FromBody] UpsertTranslationRequest request, CancellationToken ct)
     {
-        var result = await _service.UpsertItemTranslationAsync(itemId, culture, request, ct);
+        var result = await _service.UpsertItemTranslationAsync(categoryId, itemId, culture, request, ct);
         return ToActionResult(result);
     }
     

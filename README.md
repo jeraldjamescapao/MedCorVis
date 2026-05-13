@@ -31,7 +31,7 @@ Seed data covers Swiss clinic and hospital conventions in English, French, and G
 
 ## Tests
 
-125 unit tests across four projects using xUnit, NSubstitute, and FluentAssertions.
+132 unit tests across four projects using xUnit, NSubstitute, and FluentAssertions.
 Each service is tested in isolation with substituted infrastructure dependencies.
 
 ## Architecture

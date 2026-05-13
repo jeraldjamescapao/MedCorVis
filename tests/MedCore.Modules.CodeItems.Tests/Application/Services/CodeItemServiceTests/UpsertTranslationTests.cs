@@ -128,7 +128,7 @@ public sealed class UpsertTranslationTests : CodeItemServiceTestBase
     [Fact]
     public async Task UpsertItemTranslationAsync_UnsupportedCulture_ReturnsValidation()
     {
-        var result = await Sut.UpsertItemTranslationAsync(1, "xx-XX", ValidRequest);
+        var result = await Sut.UpsertItemTranslationAsync(1, 1, "xx-XX", ValidRequest);
 
         result.IsFailure.Should().BeTrue();
         result.ErrorType.Should().Be(ResultErrorType.Validation);
@@ -142,7 +142,7 @@ public sealed class UpsertTranslationTests : CodeItemServiceTestBase
             .GetItemByIdAsync(69, Arg.Any<CancellationToken>())
             .Returns((CodeItem?)null);
 
-        var result = await Sut.UpsertItemTranslationAsync(69, SupportedCultures.English, ValidRequest);
+        var result = await Sut.UpsertItemTranslationAsync(1, 69, SupportedCultures.English, ValidRequest);
 
         result.IsFailure.Should().BeTrue();
         result.ErrorType.Should().Be(ResultErrorType.NotFound);
@@ -171,7 +171,7 @@ public sealed class UpsertTranslationTests : CodeItemServiceTestBase
             .Returns(existing);
 
         var result = await Sut.UpsertItemTranslationAsync(
-            1, SupportedCultures.English, new UpsertTranslationRequest("New Label", null));
+            1, 1, SupportedCultures.English, new UpsertTranslationRequest("New Label", null));
 
         result.IsSuccess.Should().BeTrue();
         existing.IsActive.Should().BeTrue();
@@ -196,7 +196,7 @@ public sealed class UpsertTranslationTests : CodeItemServiceTestBase
             .Returns((CodeItemTranslation?)null);
 
         var result = await Sut.UpsertItemTranslationAsync(
-            1, SupportedCultures.French, new UpsertTranslationRequest("Consultation", null));
+            1, 1, SupportedCultures.French, new UpsertTranslationRequest("Consultation", null));
 
         result.IsSuccess.Should().BeTrue();
         result.Value!.Label.Should().Be("Consultation");
@@ -226,7 +226,7 @@ public sealed class UpsertTranslationTests : CodeItemServiceTestBase
             .Returns(existing);
 
         var result = await Sut.UpsertItemTranslationAsync(
-            1, SupportedCultures.English, new UpsertTranslationRequest("New Label", null));
+            1, 1, SupportedCultures.English, new UpsertTranslationRequest("New Label", null));
 
         result.IsSuccess.Should().BeTrue();
         result.Value!.Label.Should().Be("New Label");
@@ -234,5 +234,22 @@ public sealed class UpsertTranslationTests : CodeItemServiceTestBase
         await Repository
             .DidNotReceive()
             .AddTranslationAsync(Arg.Any<CodeItemTranslation>(), Arg.Any<CancellationToken>());
+    }
+    
+    [Fact]
+    public async Task UpsertItemTranslationAsync_ItemBelongsToDifferentCategory_ReturnsNotFound()
+    {
+        var item = CreateItem(categoryId: 99);
+
+        Repository
+            .GetItemByIdAsync(1, Arg.Any<CancellationToken>())
+            .Returns(item);
+
+        var result = await Sut.UpsertItemTranslationAsync(
+            categoryId: 1, itemId: 1, SupportedCultures.English, ValidRequest);
+
+        result.IsFailure.Should().BeTrue();
+        result.ErrorType.Should().Be(ResultErrorType.NotFound);
+        result.Error!.Code.Should().Be("CODEITEMS_ITEM_NOT_FOUND");
     }
 }
