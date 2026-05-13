@@ -50,4 +50,25 @@ public sealed class ReorderItemsTests : CodeItemServiceTestBase
             .Received(1)
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
+    
+    [Fact]
+    public async Task ReorderItemsAsync_UnknownItemId_SkipsAndSaves()
+    {
+        Repository
+            .GetCategoryByIdAsync(1, Arg.Any<CancellationToken>())
+            .Returns(CreateCategory());
+
+        Repository
+            .GetItemByIdAsync(69, Arg.Any<CancellationToken>())
+            .Returns((CodeItem?)null);
+
+        var request = new ReorderRequest([new ReorderEntry(69, 5)]);
+
+        var result = await Sut.ReorderItemsAsync(1, request);
+
+        result.IsSuccess.Should().BeTrue();
+        await Repository
+            .Received(1)
+            .SaveChangesAsync(Arg.Any<CancellationToken>());
+    }
 }

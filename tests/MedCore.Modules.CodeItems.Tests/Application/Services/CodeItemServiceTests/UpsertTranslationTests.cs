@@ -97,6 +97,35 @@ public sealed class UpsertTranslationTests : CodeItemServiceTestBase
     }
     
     [Fact]
+    public async Task UpsertCategoryTranslationAsync_DeactivatedTranslation_ReactivatesOnUpdate()
+    {
+        var category = CreateCategory();
+        var existing = CreateTranslation(
+            CodeItemTranslation.EntityTypeCategory, 1, SupportedCultures.English, "Old Label");
+
+        existing.Deactivate(SystemActors.System);
+
+        Repository
+            .GetCategoryByIdAsync(1, Arg.Any<CancellationToken>())
+            .Returns(category);
+
+        Repository
+            .GetTranslationAsync(
+                CodeItemTranslation.EntityTypeCategory,
+                1,
+                SupportedCultures.English,
+                Arg.Any<CancellationToken>())
+            .Returns(existing);
+
+        var result = await Sut.UpsertCategoryTranslationAsync(
+            1, SupportedCultures.English, new UpsertTranslationRequest("New Label", null));
+
+        result.IsSuccess.Should().BeTrue();
+        existing.IsActive.Should().BeTrue();
+        existing.Label.Should().Be("New Label");
+    }
+    
+    [Fact]
     public async Task UpsertItemTranslationAsync_UnsupportedCulture_ReturnsValidation()
     {
         var result = await Sut.UpsertItemTranslationAsync(1, "xx-XX", ValidRequest);
