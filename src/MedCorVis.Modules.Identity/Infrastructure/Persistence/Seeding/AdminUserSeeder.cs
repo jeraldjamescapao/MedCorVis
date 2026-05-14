@@ -1,11 +1,8 @@
-using MedCorVis.Modules.Identity.Domain.Users;
-using MedCorVis.Modules.Identity.Infrastructure.Persistence.Logging;
-
 namespace MedCorVis.Modules.Identity.Infrastructure.Persistence.Seeding;
 
 using MedCorVis.Common.Authorization;
-using Identity.Domain.Users;
-using Identity.Infrastructure.Persistence.Logging;
+using MedCorVis.Modules.Identity.Domain.Users;
+using MedCorVis.Modules.Identity.Infrastructure.Persistence.Logging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

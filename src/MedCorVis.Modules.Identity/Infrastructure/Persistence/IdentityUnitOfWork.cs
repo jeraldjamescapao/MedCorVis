@@ -1,9 +1,7 @@
-using MedCorVis.Modules.Identity.Application.Abstractions.Persistence;
-
 namespace MedCorVis.Modules.Identity.Infrastructure.Persistence;
 
 using Microsoft.EntityFrameworkCore.Storage;
-using Identity.Application.Abstractions.Persistence;
+using MedCorVis.Modules.Identity.Application.Abstractions.Persistence;
 
 internal sealed class IdentityUnitOfWork : IIdentityUnitOfWork
 {

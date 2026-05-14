@@ -1,3 +1,12 @@
+namespace MedCorVis.Modules.Identity.Configuration;
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using MedCorVis.Common.Services;
 using MedCorVis.Modules.Identity.Application.Abstractions.Authentication;
 using MedCorVis.Modules.Identity.Application.Abstractions.Email;
 using MedCorVis.Modules.Identity.Application.Abstractions.Persistence;
@@ -11,29 +20,6 @@ using MedCorVis.Modules.Identity.Infrastructure.Services;
 using MedCorVis.Modules.Identity.Infrastructure.Services.Authentication;
 using MedCorVis.Modules.Identity.Infrastructure.Services.BackgroundServices;
 using MedCorVis.Modules.Identity.Infrastructure.Services.Email;
-
-namespace MedCorVis.Modules.Identity.Configuration;
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using MedCorVis.Common.Services;
-using Identity.Application.Abstractions.Authentication;
-using Identity.Application.Abstractions.Email;
-using Identity.Application.Abstractions.Persistence;
-using Identity.Application.Services;
-using Identity.Domain.Roles;
-using Identity.Domain.Tokens;
-using Identity.Domain.Users;
-using Identity.Infrastructure.Services.Authentication;
-using Identity.Infrastructure.Services.BackgroundServices;
-using Identity.Infrastructure.Services.Email;
-using Identity.Infrastructure.Persistence;
-using Identity.Infrastructure.Persistence.Repositories;
-using Identity.Infrastructure.Services;
 using System.Text;
     
 internal static class IdentityModuleServiceCollectionExtensions

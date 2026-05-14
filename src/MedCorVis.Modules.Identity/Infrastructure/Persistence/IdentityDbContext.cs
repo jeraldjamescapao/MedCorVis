@@ -1,15 +1,11 @@
-using MedCorVis.Modules.Identity.Domain.Roles;
-using MedCorVis.Modules.Identity.Domain.Tokens;
-using MedCorVis.Modules.Identity.Domain.Users;
-
 namespace MedCorVis.Modules.Identity.Infrastructure.Persistence;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Identity.Domain.Roles;
-using Identity.Domain.Tokens; 
-using Identity.Domain.Users;
+using MedCorVis.Modules.Identity.Domain.Roles;
+using MedCorVis.Modules.Identity.Domain.Tokens;
+using MedCorVis.Modules.Identity.Domain.Users;
 
 internal sealed class IdentityDbContext 
     : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>

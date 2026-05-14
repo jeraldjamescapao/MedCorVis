@@ -1,12 +1,9 @@
-using MedCorVis.Modules.Identity.Infrastructure.Persistence;
-using MedCorVis.Modules.Identity.Infrastructure.Persistence.Seeding;
-
 namespace MedCorVis.Modules.Identity;
 
 using MedCorVis.Common.Modules;
-using Identity.Configuration;
-using Identity.Infrastructure.Persistence;
-using Identity.Infrastructure.Persistence.Seeding;
+using MedCorVis.Modules.Identity.Configuration;
+using MedCorVis.Modules.Identity.Infrastructure.Persistence;
+using MedCorVis.Modules.Identity.Infrastructure.Persistence.Seeding;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

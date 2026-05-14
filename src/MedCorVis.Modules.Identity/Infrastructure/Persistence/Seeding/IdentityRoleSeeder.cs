@@ -1,11 +1,11 @@
+namespace MedCorVis.Modules.Identity.Infrastructure.Persistence.Seeding;
+
 using MedCorVis.Common.Authorization;
 using MedCorVis.Modules.Identity.Domain.Roles;
 using MedCorVis.Modules.Identity.Infrastructure.Persistence.Logging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-
-namespace MedCorVis.Modules.Identity.Infrastructure.Persistence.Seeding;
 
 internal static class IdentityRoleSeeder
 {

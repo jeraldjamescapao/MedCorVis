@@ -1,12 +1,8 @@
-using MedCorVis.Modules.Identity.Application.Contracts.Authentication.Requests;
-using MedCorVis.Modules.Identity.Application.Contracts.Authentication.Responses;
-
 namespace MedCorVis.Modules.Identity.Application.Abstractions.Authentication;
 
 using MedCorVis.Common.Results;
-using Identity.Application.Contracts.Authentication;
-using Identity.Application.Contracts.Authentication.Requests;
-using Identity.Application.Contracts.Authentication.Responses;
+using MedCorVis.Modules.Identity.Application.Contracts.Authentication.Requests;
+using MedCorVis.Modules.Identity.Application.Contracts.Authentication.Responses;
 
 public interface IAuthService
 {

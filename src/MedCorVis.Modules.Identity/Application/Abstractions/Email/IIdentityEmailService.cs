@@ -1,8 +1,6 @@
-using MedCorVis.Modules.Identity.Domain.Users;
-
 namespace MedCorVis.Modules.Identity.Application.Abstractions.Email;
 
-using Identity.Domain.Users;
+using MedCorVis.Modules.Identity.Domain.Users;
 
 internal interface IIdentityEmailService
 {

@@ -1,8 +1,3 @@
-using MedCorVis.Modules.Identity.Application.Abstractions.Authentication;
-using MedCorVis.Modules.Identity.Application.Contracts.Authentication.Requests;
-using MedCorVis.Modules.Identity.Application.Errors;
-using MedCorVis.Modules.Identity.Configuration;
-
 namespace MedCorVis.Modules.Identity.Presentation.Controllers;
 
 using Asp.Versioning;
@@ -14,10 +9,10 @@ using MedCorVis.Common.Controllers;
 using MedCorVis.Common.Http;
 using MedCorVis.Common.Results;
 using MedCorVis.Common.Services;
-using Identity.Application.Abstractions.Authentication;
-using Identity.Application.Contracts.Authentication.Requests;
-using Identity.Application.Errors;
-using Identity.Configuration;
+using MedCorVis.Modules.Identity.Application.Abstractions.Authentication;
+using MedCorVis.Modules.Identity.Application.Contracts.Authentication.Requests;
+using MedCorVis.Modules.Identity.Application.Errors;
+using MedCorVis.Modules.Identity.Configuration;
 
 [ApiVersion("1")]
 [Route("api/v{version:apiVersion}/auth")]

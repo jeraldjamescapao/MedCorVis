@@ -1,14 +1,3 @@
-using MedCorVis.Modules.Identity.Application.Abstractions.Authentication;
-using MedCorVis.Modules.Identity.Application.Abstractions.Email;
-using MedCorVis.Modules.Identity.Application.Abstractions.Persistence;
-using MedCorVis.Modules.Identity.Application.Contracts.Authentication.Requests;
-using MedCorVis.Modules.Identity.Application.Contracts.Authentication.Responses;
-using MedCorVis.Modules.Identity.Application.Errors;
-using MedCorVis.Modules.Identity.Application.Logging;
-using MedCorVis.Modules.Identity.Configuration;
-using MedCorVis.Modules.Identity.Domain.Tokens;
-using MedCorVis.Modules.Identity.Domain.Users;
-
 namespace MedCorVis.Modules.Identity.Application.Services;
 
 using Microsoft.AspNetCore.Identity;
@@ -20,16 +9,16 @@ using MedCorVis.Common.Caching;
 using MedCorVis.Common.Exceptions;
 using MedCorVis.Common.Results;
 using MedCorVis.Common.Services;
-using Identity.Application.Abstractions.Authentication;
-using Identity.Application.Abstractions.Email;
-using Identity.Application.Abstractions.Persistence;
-using Identity.Application.Contracts.Authentication.Requests;
-using Identity.Application.Contracts.Authentication.Responses;
-using Identity.Application.Errors;
-using Identity.Application.Logging;
-using Identity.Configuration;
-using Identity.Domain.Tokens;
-using Identity.Domain.Users;
+using MedCorVis.Modules.Identity.Application.Abstractions.Authentication;
+using MedCorVis.Modules.Identity.Application.Abstractions.Email;
+using MedCorVis.Modules.Identity.Application.Abstractions.Persistence;
+using MedCorVis.Modules.Identity.Application.Contracts.Authentication.Requests;
+using MedCorVis.Modules.Identity.Application.Contracts.Authentication.Responses;
+using MedCorVis.Modules.Identity.Application.Errors;
+using MedCorVis.Modules.Identity.Application.Logging;
+using MedCorVis.Modules.Identity.Configuration;
+using MedCorVis.Modules.Identity.Domain.Tokens;
+using MedCorVis.Modules.Identity.Domain.Users;
 using System.Security.Cryptography;
 using System.Text;
 

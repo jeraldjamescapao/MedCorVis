@@ -1,9 +1,7 @@
-using MedCorVis.Modules.Identity.Domain.Tokens;
-
 namespace MedCorVis.Modules.Identity.Infrastructure.Persistence.Repositories;
 
 using Microsoft.EntityFrameworkCore;
-using Identity.Domain.Tokens;
+using MedCorVis.Modules.Identity.Domain.Tokens;
 
 internal sealed class RefreshTokenRepository : IRefreshTokenRepository
 {
