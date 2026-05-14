@@ -60,9 +60,9 @@ internal static class CodeItemSeeder
             .ToListAsync())
             .Select(t => (t.EntityType, t.EntityId, t.Culture))
             .ToHashSet();
-        
-        var categoriesSeeded   = 0; 
-        var itemsSeeded        = 0; 
+
+        var categoriesSeeded   = 0;
+        var itemsSeeded        = 0;
         var translationsSeeded = 0;
 
         foreach (var seed in AllSeeds)
@@ -85,8 +85,8 @@ internal static class CodeItemSeeder
                     isDeletable: false,
                     SystemActors.System);
 
-                await db.Categories.AddAsync(category);
-                await db.SaveChangesAsync();
+                db.Categories.Add(category);
+                await db.SaveChangesAsync(); // needed — populates category.Id
                 existingCategoryCodes.Add(seed.Code);
                 categoriesSeeded++;
             }
@@ -109,7 +109,7 @@ internal static class CodeItemSeeder
                     isSystemDefined: true,
                     SystemActors.System);
 
-                await db.Translations.AddAsync(translation);
+                db.Translations.Add(translation);
                 existingTranslationKeys.Add((CodeItemTranslation.EntityTypeCategory, category.Id, culture));
                 translationsSeeded++;
             }
@@ -135,8 +135,8 @@ internal static class CodeItemSeeder
                         isDeletable: false,
                         SystemActors.System);
 
-                    await db.Items.AddAsync(item);
-                    await db.SaveChangesAsync();
+                    db.Items.Add(item);
+                    await db.SaveChangesAsync(); // needed — populates item.Id
                     existingItemKeys.Add((category.Id, itemSeed.Code));
                     itemsSeeded++;
                 }
@@ -159,12 +159,13 @@ internal static class CodeItemSeeder
                         isSystemDefined: true,
                         SystemActors.System);
 
-                    await db.Translations.AddAsync(translation);
+                    db.Translations.Add(translation);
                     existingTranslationKeys.Add((CodeItemTranslation.EntityTypeItem, item.Id, culture));
                     translationsSeeded++;
                 }
             }
 
+            // Batch flush all translations for this category and its items in one call
             await db.SaveChangesAsync();
         }
 
