@@ -1,9 +1,8 @@
 # MedCorVis
 
-MedCorVis is a healthcare API for managing patients, doctors, and appointments.
-Built as a backend engineering portfolio project showcasing .NET 10 modular monolith architecture
-with clean layer separation, JWT authentication, refresh token rotation,
-and structured logging. Built with ASP.NET Core, EF Core, and SQL Server.
+MedCorVis is a healthcare API built as a backend engineering portfolio project showcasing .NET 10 modular monolith architecture with clean layer separation, 
+JWT authentication, refresh token rotation, and structured logging. 
+Built with ASP.NET Core, EF Core, and SQL Server.
 
 ## The Story
 
