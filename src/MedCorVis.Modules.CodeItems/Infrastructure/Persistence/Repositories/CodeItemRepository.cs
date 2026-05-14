@@ -103,6 +103,15 @@ internal sealed class CodeItemRepository : ICodeItemRepository
             .ToListAsync(ct);
     }
     
+    public async Task<IReadOnlyList<CodeItemTranslation>> GetTrackedTranslationsByEntityAsync(
+        string entityType, long entityId, CancellationToken ct = default)
+    {
+        return await _context.Translations
+            .Where(t => t.EntityType == entityType && t.EntityId == entityId && !t.IsDeleted)
+            .OrderBy(t => t.Culture)
+            .ToListAsync(ct);
+    }
+    
     public async Task<CodeItemTranslation?> GetTranslationAsync(
         string entityType, long entityId, string culture, CancellationToken ct = default)
     {

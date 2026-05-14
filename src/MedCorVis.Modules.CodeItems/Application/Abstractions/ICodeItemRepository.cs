@@ -21,6 +21,8 @@ internal interface ICodeItemRepository
     // Translations
     Task<IReadOnlyList<CodeItemTranslation>> GetTranslationsByEntityAsync(
         string entityType, long entityId, CancellationToken ct = default);
+    Task<IReadOnlyList<CodeItemTranslation>> GetTrackedTranslationsByEntityAsync(
+        string entityType, long entityId, CancellationToken ct = default);
     Task<CodeItemTranslation?> GetTranslationAsync(
         string entityType, long entityId, string culture, CancellationToken ct = default);
     Task AddTranslationAsync(CodeItemTranslation translation, CancellationToken ct = default);

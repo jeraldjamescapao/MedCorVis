@@ -295,9 +295,9 @@ internal sealed class CodeItemService : ICodeItemService
 
         item.Delete(_currentUserService.UserId);
 
-        // Cascade: delete all translations for this item
-        var translations = await _repository.GetTranslationsByEntityAsync(
-            CodeItemTranslation.EntityTypeItem, id, ct);
+        var translations = 
+            await _repository.GetTrackedTranslationsByEntityAsync(
+                CodeItemTranslation.EntityTypeItem, id, ct);
 
         foreach (var translation in translations)
             translation.Delete(_currentUserService.UserId);

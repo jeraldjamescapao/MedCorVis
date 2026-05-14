@@ -53,7 +53,7 @@ public sealed class DeleteItemTests : CodeItemServiceTestBase
         var translation3 = CreateTranslation(entityId: 1, culture: "de");
         
         Repository
-            .GetTranslationsByEntityAsync(
+            .GetTrackedTranslationsByEntityAsync(
                 CodeItemTranslation.EntityTypeItem,
                 Arg.Any<long>(),
                 Arg.Any<CancellationToken>())
@@ -68,7 +68,7 @@ public sealed class DeleteItemTests : CodeItemServiceTestBase
         translation3.IsDeleted.Should().BeTrue();
         await Repository
             .Received(1)
-            .GetTranslationsByEntityAsync(
+            .GetTrackedTranslationsByEntityAsync(
                 CodeItemTranslation.EntityTypeItem,
                 Arg.Any<long>(),
                 Arg.Any<CancellationToken>());
