@@ -1,8 +1,3 @@
-using MedCorVis.Modules.Users.Application.Abstractions;
-using MedCorVis.Modules.Users.Application.Contracts.Requests;
-using MedCorVis.Modules.Users.Application.Contracts.Responses;
-using MedCorVis.Modules.Users.Application.Errors;
-
 namespace MedCorVis.Modules.Users.Presentation.Controllers;
 
 using Asp.Versioning;
@@ -11,10 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using MedCorVis.Common.Controllers;
 using MedCorVis.Common.Results;
 using MedCorVis.Common.Services;
-using Users.Application.Abstractions;
-using Users.Application.Contracts.Requests;
-using Users.Application.Contracts.Responses;
-using Users.Application.Errors;
+using MedCorVis.Modules.Users.Application.Abstractions;
+using MedCorVis.Modules.Users.Application.Contracts.Requests;
+using MedCorVis.Modules.Users.Application.Contracts.Responses;
+using MedCorVis.Modules.Users.Application.Errors;
 
 [Authorize]
 [ApiVersion("1")]

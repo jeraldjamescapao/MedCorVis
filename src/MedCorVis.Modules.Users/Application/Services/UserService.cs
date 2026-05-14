@@ -1,9 +1,3 @@
-using MedCorVis.Modules.Users.Application.Abstractions;
-using MedCorVis.Modules.Users.Application.Contracts.Requests;
-using MedCorVis.Modules.Users.Application.Contracts.Responses;
-using MedCorVis.Modules.Users.Application.Errors;
-using MedCorVis.Modules.Users.Application.Logging;
-
 namespace MedCorVis.Modules.Users.Application.Services;
 
 using Microsoft.AspNetCore.Identity;
@@ -12,11 +6,12 @@ using MedCorVis.Common.Caching;
 using MedCorVis.Common.Localization;
 using MedCorVis.Common.Results;
 using MedCorVis.Modules.Identity.Domain.Users;
-using Users.Application.Abstractions;
-using Users.Application.Contracts.Requests;
-using Users.Application.Contracts.Responses;
-using Users.Application.Errors;
-using Users.Application.Logging;
+using MedCorVis.Modules.Users.Application.Abstractions;
+using MedCorVis.Modules.Users.Application.Contracts.Requests;
+using MedCorVis.Modules.Users.Application.Contracts.Responses;
+using MedCorVis.Modules.Users.Application.Errors;
+using MedCorVis.Modules.Users.Application.Logging;
+
 
 internal sealed class UserService : IUserService
 {

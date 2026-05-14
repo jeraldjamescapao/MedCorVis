@@ -1,11 +1,8 @@
-using MedCorVis.Modules.Users.Application.Contracts.Requests;
-using MedCorVis.Modules.Users.Application.Contracts.Responses;
-
 namespace MedCorVis.Modules.Users.Application.Abstractions;
 
 using MedCorVis.Common.Results;
-using Users.Application.Contracts.Requests;
-using Users.Application.Contracts.Responses;
+using MedCorVis.Modules.Users.Application.Contracts.Requests;
+using MedCorVis.Modules.Users.Application.Contracts.Responses;
 
 public interface IUserService
 {
