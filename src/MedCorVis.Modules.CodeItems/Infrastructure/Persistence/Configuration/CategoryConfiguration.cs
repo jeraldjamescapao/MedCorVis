@@ -73,6 +73,7 @@ internal sealed class CategoryConfiguration : IEntityTypeConfiguration<Category>
 
         builder.HasIndex(x => x.Code)
             .IsUnique()
+            .HasFilter("[IsDeleted] = 0")
             .HasDatabaseName("IX_Categories_Code");
 
         builder.HasIndex(x => x.IsActive)

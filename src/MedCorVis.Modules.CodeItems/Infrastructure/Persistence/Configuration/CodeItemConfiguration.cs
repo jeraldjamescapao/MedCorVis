@@ -71,6 +71,7 @@ internal sealed class CodeItemConfiguration : IEntityTypeConfiguration<CodeItem>
 
         builder.HasIndex(x => new { x.CategoryId, x.Code })
             .IsUnique()
+            .HasFilter("[IsDeleted] = 0")
             .HasDatabaseName("IX_Items_CategoryId_Code");
 
         builder.HasIndex(x => x.IsActive)

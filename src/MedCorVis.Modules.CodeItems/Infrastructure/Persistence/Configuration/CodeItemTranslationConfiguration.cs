@@ -67,6 +67,7 @@ internal sealed class CodeItemTranslationConfiguration : IEntityTypeConfiguratio
 
         builder.HasIndex(x => new { x.EntityType, x.EntityId, x.Culture })
             .IsUnique()
+            .HasFilter("[IsDeleted] = 0")
             .HasDatabaseName("IX_Translations_EntityType_EntityId_Culture");
 
         builder.HasIndex(x => x.IsActive)
