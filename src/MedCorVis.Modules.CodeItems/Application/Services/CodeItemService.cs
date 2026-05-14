@@ -311,19 +311,34 @@ internal sealed class CodeItemService : ICodeItemService
         long categoryId, ReorderRequest request, CancellationToken ct = default)
     {
         var category = await _repository.GetCategoryByIdAsync(categoryId, ct);
+
         if (category is null)
         {
             CodeItemLogMessages.CategoryNotFoundById(_logger, categoryId, null);
             return Result<bool>.NotFound(CodeItemErrors.CategoryNotFound);
         }
 
+        var requestedIds = request.Entries
+            .Select(entry => entry.Id)
+            .ToList();
+
+        var items 
+            = await _repository.GetTrackedItemsByCategoryIdAndIdsAsync(categoryId, requestedIds, ct);
+
+        if (items.Count != requestedIds.Count)
+        {
+            CodeItemLogMessages.ItemNotFound(_logger, categoryId, null);
+            return Result<bool>.NotFound(CodeItemErrors.ItemNotFound);
+        }
+
         foreach (var entry in request.Entries)
         {
-            var item = await _repository.GetItemByIdAsync(entry.Id, ct);
-            item?.Update(item.Description, entry.SortOrder, _currentUserService.UserId);
+            var item = items.Single(i => i.Id == entry.Id);
+            item.Update(item.Description, entry.SortOrder, _currentUserService.UserId);
         }
 
         await _repository.SaveChangesAsync(ct);
+
         return Result<bool>.Success(true);
     }
     

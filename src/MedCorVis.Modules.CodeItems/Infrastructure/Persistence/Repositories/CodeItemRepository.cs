@@ -52,6 +52,17 @@ internal sealed class CodeItemRepository : ICodeItemRepository
     
     #region Items
     
+    public async Task<IReadOnlyList<CodeItem>> GetTrackedItemsByCategoryIdAndIdsAsync(
+        long categoryId, IReadOnlyCollection<long> ids, CancellationToken ct = default)
+    {
+        return await _context.Items
+            .Where(i =>
+                i.CategoryId == categoryId &&
+                ids.Contains(i.Id) &&
+                !i.IsDeleted)
+            .ToListAsync(ct);
+    }
+    
     public async Task<IReadOnlyList<CodeItem>> GetItemsByCategoryIdAsync(
         long categoryId, CancellationToken ct = default)
     {

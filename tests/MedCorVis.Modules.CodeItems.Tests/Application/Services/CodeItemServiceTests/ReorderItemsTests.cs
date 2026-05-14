@@ -36,12 +36,15 @@ public sealed class ReorderItemsTests : CodeItemServiceTestBase
             .Returns(CreateCategory());
 
         var item = CreateItem();
-
+        
         Repository
-            .GetItemByIdAsync(1, Arg.Any<CancellationToken>())
-            .Returns(item);
+            .GetTrackedItemsByCategoryIdAndIdsAsync(
+                1,
+                Arg.Is<IReadOnlyCollection<long>>(ids => ids.Contains(item.Id)),
+                Arg.Any<CancellationToken>())
+            .Returns([item]);
 
-        var request = new ReorderRequest([new ReorderEntry(1, 5)]);
+        var request = new ReorderRequest([new ReorderEntry(item.Id, 5)]);
 
         var result = await Sut.ReorderItemsAsync(1, request);
 
@@ -52,23 +55,28 @@ public sealed class ReorderItemsTests : CodeItemServiceTestBase
     }
     
     [Fact]
-    public async Task ReorderItemsAsync_UnknownItemId_SkipsAndSaves()
+    public async Task ReorderItemsAsync_UnknownItemId_ReturnsNotFound()
     {
         Repository
             .GetCategoryByIdAsync(1, Arg.Any<CancellationToken>())
             .Returns(CreateCategory());
 
         Repository
-            .GetItemByIdAsync(69, Arg.Any<CancellationToken>())
-            .Returns((CodeItem?)null);
+            .GetTrackedItemsByCategoryIdAndIdsAsync(
+                1,
+                Arg.Is<IReadOnlyCollection<long>>(ids => ids.Contains(69)),
+                Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult<IReadOnlyList<CodeItem>>([]));
 
         var request = new ReorderRequest([new ReorderEntry(69, 5)]);
 
         var result = await Sut.ReorderItemsAsync(1, request);
 
-        result.IsSuccess.Should().BeTrue();
+        result.IsFailure.Should().BeTrue();
+        result.ErrorType.Should().Be(ResultErrorType.NotFound);
+
         await Repository
-            .Received(1)
+            .DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 }

@@ -12,7 +12,10 @@ internal interface ICodeItemRepository
     Task AddCategoryAsync(Category category, CancellationToken ct = default);
 
     // Items
-    Task<IReadOnlyList<CodeItem>> GetItemsByCategoryIdAsync(long categoryId, CancellationToken ct = default);
+    Task<IReadOnlyList<CodeItem>> GetTrackedItemsByCategoryIdAndIdsAsync(
+        long categoryId, IReadOnlyCollection<long> ids, CancellationToken ct = default);
+    Task<IReadOnlyList<CodeItem>> GetItemsByCategoryIdAsync(
+        long categoryId, CancellationToken ct = default);
     Task<CodeItem?> GetItemByIdAsync(long id, CancellationToken ct = default);
     Task<bool> ItemCodeExistsAsync(long categoryId, string code, CancellationToken ct = default);
     Task<bool> CategoryHasActiveItemsAsync(long categoryId, CancellationToken ct = default);
