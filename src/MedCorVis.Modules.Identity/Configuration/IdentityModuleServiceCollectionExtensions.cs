@@ -139,7 +139,7 @@ internal static class IdentityModuleServiceCollectionExtensions
                 };
             });
         
-        services.AddScoped<IJwtTokenService, JwtTokenService>();
+        services.AddSingleton<IJwtTokenService, JwtTokenService>();
         
         return services;      
     }

@@ -4,7 +4,6 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using MedCorVis.Common.Controllers;
 using MedCorVis.Common.Http;
 using MedCorVis.Common.Results;
@@ -12,7 +11,6 @@ using MedCorVis.Common.Services;
 using MedCorVis.Modules.Identity.Application.Abstractions.Authentication;
 using MedCorVis.Modules.Identity.Application.Contracts.Authentication.Requests;
 using MedCorVis.Modules.Identity.Application.Errors;
-using MedCorVis.Modules.Identity.Configuration;
 
 [ApiVersion("1")]
 [Route("api/v{version:apiVersion}/auth")]
@@ -20,16 +18,13 @@ public sealed class AuthController : BaseApiController
 {
     private readonly IAuthService _authService;
     private readonly ICurrentUserService _currentUserService;
-    private readonly JwtSettings _jwtSettings;
 
     public AuthController(
         IAuthService authService, 
-        ICurrentUserService currentUserService,
-        IOptions<JwtSettings> jwtSettings)
+        ICurrentUserService currentUserService)
     {
         _authService = authService;
         _currentUserService = currentUserService;
-        _jwtSettings = jwtSettings.Value;
     }
 
     [HttpPost("register")]
@@ -39,7 +34,9 @@ public sealed class AuthController : BaseApiController
         var result = await _authService.RegisterAsync(request, ct);
         if (result.IsFailure) return ToActionResult(result);
         
-        AppendRefreshTokenCookie(result.Value!.RawRefreshToken);
+        AppendRefreshTokenCookie(
+            result.Value!.RawRefreshToken, result.Value.RefreshTokenExpiresAt);
+        
         return ToActionResult(result, StatusCodes.Status201Created);
     }
 
@@ -50,7 +47,9 @@ public sealed class AuthController : BaseApiController
         var result = await _authService.LoginAsync(request, ct);
         if (result.IsFailure) return ToActionResult(result);
         
-        AppendRefreshTokenCookie(result.Value!.RawRefreshToken);
+        AppendRefreshTokenCookie(
+            result.Value!.RawRefreshToken, result.Value.RefreshTokenExpiresAt);
+        
         return ToActionResult(result);
     }
     
@@ -61,7 +60,9 @@ public sealed class AuthController : BaseApiController
         var result = await _authService.RefreshAsync(token, ct);
         if (result.IsFailure) return ToActionResult(result);
         
-        AppendRefreshTokenCookie(result.Value!.RawRefreshToken);
+        AppendRefreshTokenCookie(
+            result.Value!.RawRefreshToken, result.Value.RefreshTokenExpiresAt);
+        
         return ToActionResult(result);
     }
     
@@ -113,19 +114,23 @@ public sealed class AuthController : BaseApiController
         return NoContent();
     }
     
-    private void AppendRefreshTokenCookie(string rawRefreshToken)
+    private void AppendRefreshTokenCookie(string rawRefreshToken, DateTimeOffset expiresAt)
     {
         Response.Cookies.Append(CookieNames.RefreshToken, rawRefreshToken, new CookieOptions
         {
             HttpOnly = true,
             Secure = true,
             SameSite = SameSiteMode.Strict,
-            Expires = DateTimeOffset.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationInDays)
+            Path = GetVersionedPath("auth"),
+            Expires = expiresAt
         });
     }
 
     private void DeleteRefreshTokenCookie()
     {
-        Response.Cookies.Delete(CookieNames.RefreshToken);
+        Response.Cookies.Delete(CookieNames.RefreshToken, new CookieOptions
+        {
+            Path = GetVersionedPath("auth")
+        });
     }
 }

@@ -35,7 +35,8 @@ public sealed class ApplicationUser : IdentityUser<Guid>, IAuditableEntity
 
     public string FullName => $"{FirstName} {LastName}";
     public string FullNameInverted => $"{LastName}, {FirstName}";
-    public string FullNameWithInitials => $"{FirstName[0]}. {LastName}";
+    public string FullNameWithInitials =>
+        FirstName.Length > 0 ? $"{FirstName[0]}. {LastName}" : LastName;
 
     #endregion
     

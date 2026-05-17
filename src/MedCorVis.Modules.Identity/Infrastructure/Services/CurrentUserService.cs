@@ -15,12 +15,16 @@ internal sealed class CurrentUserService : ICurrentUserService
         _httpContextAccessor = httpContextAccessor;    
     }
     
+    public string UserId
+    {
+        get
+        {
+            var user = _httpContextAccessor.HttpContext?.User;
+            if (user?.Identity?.IsAuthenticated != true) return SystemActors.System;
+            return user.FindFirstValue(JwtRegisteredClaimNames.Sub) ?? SystemActors.System;
+        }
+    }
+
     public bool IsAuthenticated =>
         _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
-    
-    public string UserId =>
-        IsAuthenticated 
-            ? (_httpContextAccessor.HttpContext?.User.FindFirstValue(JwtRegisteredClaimNames.Sub) 
-               ?? SystemActors.System) 
-            : SystemActors.System;
 }

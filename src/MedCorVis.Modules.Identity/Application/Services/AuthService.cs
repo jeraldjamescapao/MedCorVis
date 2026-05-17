@@ -114,7 +114,9 @@ internal sealed class AuthService : IAuthService
                 roles,
                 accessToken)
             {
-                RawRefreshToken = rawRefreshToken
+                RawRefreshToken = rawRefreshToken,
+                RefreshTokenExpiresAt = 
+                    DateTimeOffset.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationInDays)
             });
         }
         catch (EmailDeliveryException ex)
@@ -160,7 +162,9 @@ internal sealed class AuthService : IAuthService
         }
 
         var roles = await _userManager.GetRolesAsync(user);
+        
         var (accessToken, rawRefreshToken) = await IssueTokenPairAsync(user, roles, ct);
+        await _refreshTokenRepository.SaveChangesAsync(ct);
         
         var culture = user.PreferredCulture ?? _currentCultureService.Culture;
         _userCultureCache.SetCultureForUser(user.Id, culture);
@@ -175,7 +179,9 @@ internal sealed class AuthService : IAuthService
             roles,
             accessToken)
         {
-            RawRefreshToken = rawRefreshToken
+            RawRefreshToken = rawRefreshToken,
+            RefreshTokenExpiresAt = 
+                DateTimeOffset.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationInDays)
         });
     }
 
@@ -239,7 +245,9 @@ internal sealed class AuthService : IAuthService
         
         return Result<RefreshResponse>.Success(new RefreshResponse(newAccessToken)
         {
-            RawRefreshToken = newRawRefreshToken
+            RawRefreshToken = newRawRefreshToken,
+            RefreshTokenExpiresAt = 
+                DateTimeOffset.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationInDays)
         });
     }
 
@@ -351,7 +359,6 @@ internal sealed class AuthService : IAuthService
             DateTimeOffset.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationInDays));
 
         await _refreshTokenRepository.AddAsync(refreshToken, ct);
-        await _refreshTokenRepository.SaveChangesAsync(ct);
 
         return (accessToken, rawRefreshToken);
     }

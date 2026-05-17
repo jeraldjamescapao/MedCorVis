@@ -1,14 +1,10 @@
-using MedCorVis.Common.ProblemDetails;
-using MedCorVis.Common.Results;
-using MedCorVis.Common.Services;
-
 namespace MedCorVis.Common.Controllers;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Common.ProblemDetails;
-using Common.Results;
-using Common.Services;
+using MedCorVis.Common.ProblemDetails;
+using MedCorVis.Common.Results;
+using MedCorVis.Common.Services;
 
 [ApiController]
 public abstract class BaseApiController : ControllerBase
@@ -30,5 +26,11 @@ public abstract class BaseApiController : ControllerBase
     protected static bool TryGetCurrentUserId(ICurrentUserService currentUserService, out Guid userId)
     {
         return Guid.TryParse(currentUserService.UserId, out userId);
+    }
+    
+    protected string GetVersionedPath(string suffix)
+    {
+        var version = HttpContext.GetRequestedApiVersion()?.MajorVersion;
+        return $"/api/v{version}/{suffix}";
     }
 }

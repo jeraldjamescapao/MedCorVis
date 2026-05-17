@@ -16,6 +16,7 @@ public static class AppRoles
             Admin, 
             Doctor, 
             MedicalSecretary, 
+            MedTech,
             Patient, 
             Nurse, 
             Receptionist
