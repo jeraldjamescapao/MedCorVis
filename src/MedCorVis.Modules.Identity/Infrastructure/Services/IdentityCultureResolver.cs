@@ -1,11 +1,9 @@
-using MedCorVis.Modules.Identity.Domain.Users;
-
 namespace MedCorVis.Modules.Identity.Infrastructure.Services;
 
 using MedCorVis.Common.Caching;
 using MedCorVis.Common.Localization;
 using MedCorVis.Common.Services;
-using Identity.Domain.Users;
+using MedCorVis.Modules.Identity.Domain.Users;
 using Microsoft.AspNetCore.Identity;
 
 internal sealed class IdentityCultureResolver : ICultureResolver
@@ -28,7 +26,7 @@ internal sealed class IdentityCultureResolver : ICultureResolver
         
         // Cache miss — query the database.
         // This only happens when the sliding window expires (30 minutes of inactivity).
-        // Login and culture updates keep the cache warm in normal usage.
+        // Login and culture updates keep the cache warm (unempty) in normal usage.
         var user = await _userManager.FindByIdAsync(userId.ToString());
         var culture = user?.PreferredCulture is not null &&
                       SupportedCultures.All.Contains(user.PreferredCulture)

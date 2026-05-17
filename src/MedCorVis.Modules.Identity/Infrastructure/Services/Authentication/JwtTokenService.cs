@@ -1,14 +1,10 @@
-using MedCorVis.Modules.Identity.Application.Abstractions.Authentication;
-using MedCorVis.Modules.Identity.Configuration;
-using MedCorVis.Modules.Identity.Domain.Users;
-
 namespace MedCorVis.Modules.Identity.Infrastructure.Services.Authentication;
 
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Options;
-using Identity.Application.Abstractions.Authentication;
-using Identity.Configuration;
-using Identity.Domain.Users;
+using MedCorVis.Modules.Identity.Application.Abstractions.Authentication;
+using MedCorVis.Modules.Identity.Configuration;
+using MedCorVis.Modules.Identity.Domain.Users;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;

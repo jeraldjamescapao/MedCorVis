@@ -1,12 +1,8 @@
+namespace MedCorVis.Modules.Identity.Infrastructure.Services.BackgroundServices;
+
 using MedCorVis.Modules.Identity.Application.Logging;
 using MedCorVis.Modules.Identity.Configuration;
 using MedCorVis.Modules.Identity.Domain.Tokens;
-
-namespace MedCorVis.Modules.Identity.Infrastructure.Services.BackgroundServices;
-
-using Identity.Application.Logging;
-using Identity.Configuration;
-using Identity.Domain.Tokens;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;

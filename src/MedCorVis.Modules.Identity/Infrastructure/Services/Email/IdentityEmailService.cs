@@ -1,16 +1,12 @@
-using MedCorVis.Modules.Identity.Application.Abstractions.Email;
-using MedCorVis.Modules.Identity.Configuration;
-using MedCorVis.Modules.Identity.Domain.Users;
-
 namespace MedCorVis.Modules.Identity.Infrastructure.Services.Email;
 
 using Microsoft.Extensions.Options;
 using MedCorVis.Common.Configuration;
 using MedCorVis.Common.Localization;
 using MedCorVis.Common.Services.Email;
-using Identity.Application.Abstractions.Email;
-using Identity.Configuration;
-using Identity.Domain.Users;
+using MedCorVis.Modules.Identity.Application.Abstractions.Email;
+using MedCorVis.Modules.Identity.Configuration;
+using MedCorVis.Modules.Identity.Domain.Users;
 
 internal sealed class IdentityEmailService : IIdentityEmailService
 {
