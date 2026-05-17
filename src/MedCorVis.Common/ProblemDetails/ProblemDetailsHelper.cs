@@ -1,8 +1,7 @@
-using MedCorVis.Common.Results;
-
 namespace MedCorVis.Common.ProblemDetails;
 
-using Common.Results;
+using MedCorVis.Common.Results;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 public static class ProblemDetailsHelper
@@ -12,39 +11,43 @@ public static class ProblemDetailsHelper
         {
             [ResultErrorType.Validation] = (
                 400,
-                "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                RfcLinks.Status400,
                 "Bad Request"),
             [ResultErrorType.Unauthorized] = (
                 401,
-                "https://tools.ietf.org/html/rfc9110#section-15.5.2",
+                RfcLinks.Status401,
                 "Unauthorized"),
             [ResultErrorType.Forbidden] = (
                 403,
-                "https://tools.ietf.org/html/rfc9110#section-15.5.4",
+                RfcLinks.Status403,
                 "Forbidden"),
             [ResultErrorType.NotFound] = (
                 404,
-                "https://tools.ietf.org/html/rfc9110#section-15.5.5",
+                RfcLinks.Status404,
                 "Not Found"),
             [ResultErrorType.Conflict] = (
                 409,
-                "https://tools.ietf.org/html/rfc9110#section-15.5.10",
+                RfcLinks.Status409,
                 "Conflict"),
             [ResultErrorType.UnprocessableEntity] = (
                 422,
-                "https://tools.ietf.org/html/rfc9110#section-15.5.21",
+                RfcLinks.Status422,
                 "Unprocessable Content"),
             [ResultErrorType.Internal] = (
                 500,
-                "https://tools.ietf.org/html/rfc9110#section-15.6.1",
+                RfcLinks.Status500,
                 "Internal Server Error"),
             [ResultErrorType.ServiceUnavailable] = (
                 503,
-                "https://tools.ietf.org/html/rfc9110#section-15.6.4",
+                RfcLinks.Status503,
                 "Service Unavailable"),
         };
     
-    public static ProblemDetails FromResult(ResultError error, ResultErrorType errorType, string instance, string traceId)
+    public static ProblemDetails FromResult(
+        ResultError error, 
+        ResultErrorType errorType, 
+        string instance, 
+        string traceId)
     {
         var entry = GetEntry(errorType);
         
@@ -59,6 +62,26 @@ public static class ProblemDetailsHelper
             {
                 ["traceId"] = traceId,
                 ["code"] = error.Code
+            }
+        };
+    }
+    
+    public static ProblemDetails ForInvalidRequest(
+        Dictionary<string, string[]> errors,
+        string instance,
+        string traceId)
+    {
+        return new ProblemDetails
+        {
+            Type     = RfcLinks.Status400,
+            Title    = "Bad Request",
+            Status   = StatusCodes.Status400BadRequest,
+            Detail   = "One or more validation errors occurred.",
+            Instance = instance,
+            Extensions =
+            {
+                ["traceId"] = traceId,
+                ["errors"]  = errors
             }
         };
     }

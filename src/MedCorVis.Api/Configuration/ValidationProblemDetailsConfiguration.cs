@@ -1,5 +1,6 @@
 namespace MedCorVis.Api.Configuration;
 
+using MedCorVis.Common.ProblemDetails;
 using Microsoft.AspNetCore.Mvc;
 
 internal static class ValidationProblemDetailsConfiguration
@@ -17,19 +18,10 @@ internal static class ValidationProblemDetailsConfiguration
                         e => e.Key,
                         e => e.Value!.Errors.Select(x => x.ErrorMessage).ToArray());
 
-                var problem = new ProblemDetails
-                {
-                    Type     = "https://tools.ietf.org/html/rfc9110#section-15.5.1",
-                    Title    = "Bad Request",
-                    Status   = StatusCodes.Status400BadRequest,
-                    Detail   = "One or more validation errors occurred.",
-                    Instance = context.HttpContext.Request.Path,
-                    Extensions =
-                    {
-                        ["traceId"] = context.HttpContext.TraceIdentifier,
-                        ["errors"] = errors
-                    }
-                };
+                var problem = ProblemDetailsHelper.ForInvalidRequest(
+                    errors,
+                    context.HttpContext.Request.Path,
+                    context.HttpContext.TraceIdentifier);
 
                 return new ObjectResult(problem)
                 {
