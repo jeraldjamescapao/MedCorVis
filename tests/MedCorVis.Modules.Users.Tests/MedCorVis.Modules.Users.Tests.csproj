@@ -17,7 +17,6 @@
         </PackageReference>
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\..\src\MedCorVis.Modules.Identity\MedCorVis.Modules.Identity.csproj" />
         <ProjectReference Include="..\..\src\MedCorVis.Modules.Users\MedCorVis.Modules.Users.csproj" />
     </ItemGroup>
 </Project>
