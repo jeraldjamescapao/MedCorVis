@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using MedCorVis.Common.Account;
 using MedCorVis.Common.Services;
 using MedCorVis.Modules.Identity.Application.Abstractions.Authentication;
 using MedCorVis.Modules.Identity.Application.Abstractions.Email;
@@ -34,6 +35,8 @@ internal static class IdentityModuleServiceCollectionExtensions
         services.AddIdentityPersistence(connectionString);
         services.AddIdentityServices(configuration);
         services.AddIdentityJwt(configuration);
+        
+        services.AddScoped<IAccountService, AccountService>();
         
         return services;
     }
