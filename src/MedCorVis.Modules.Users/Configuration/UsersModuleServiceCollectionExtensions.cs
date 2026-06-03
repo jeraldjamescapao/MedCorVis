@@ -21,8 +21,7 @@ internal static class UsersModuleServiceCollectionExtensions
         services.AddDbContext<UsersDbContext>(options =>
             options.UseSqlServer(connectionString,
                 o => o.MigrationsAssembly("MedCorVis.Modules.Users")));
-
-        services.AddScoped<IUserService, UserService>();
+        
         services.AddScoped<IUserProfileRepository, UserProfileRepository>();
         services.AddScoped<IUserProfileService, UserProfileService>();
 

@@ -6,9 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using MedCorVis.Common.Controllers;
 using MedCorVis.Common.Results;
 using MedCorVis.Common.Services;
-using MedCorVis.Modules.Users.Application.Abstractions;
+using MedCorVis.Common.UserProfiles;
 using MedCorVis.Modules.Users.Application.Contracts.Requests;
-using MedCorVis.Modules.Users.Application.Contracts.Responses;
 using MedCorVis.Modules.Users.Application.Errors;
 
 [Authorize]
@@ -16,14 +15,14 @@ using MedCorVis.Modules.Users.Application.Errors;
 [Route("api/v{version:apiVersion}/users")]
 public sealed class UsersConsumerController : BaseApiController
 {
-    private readonly IUserService _userService;
+    private readonly IUserProfileService _userProfileService;
     private readonly ICurrentUserService _currentUserService;
     
     public UsersConsumerController(
-        IUserService userService, 
+        IUserProfileService userService, 
         ICurrentUserService currentUserService)
     {
-        _userService = userService;
+        _userProfileService = userService;
         _currentUserService = currentUserService;
     }
     
@@ -32,9 +31,15 @@ public sealed class UsersConsumerController : BaseApiController
         [FromBody] UpdateProfileRequest request, CancellationToken ct)
     {
         if (!TryGetCurrentUserId(_currentUserService, out var userId))
-            return ToActionResult(Result<UserProfileResponse>.Unauthorized(UserErrors.InvalidToken));
+            return ToActionResult(Result<UserProfileData>.Unauthorized(UserErrors.InvalidToken));
 
-        var result = await _userService.UpdateProfileAsync(userId, request, ct);
+        var result = await _userProfileService.UpdateProfileAsync(
+            userId, 
+            request.FirstName, 
+            request.LastName, 
+            request.BirthDate, 
+            ct);
+
         return ToActionResult(result);
     }
 }
