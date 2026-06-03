@@ -7,41 +7,11 @@
 ###
 
 # ─────────────────────────────────────────
-# Users — Get Current User
-# Returns the authenticated user's profile.
-# Requires: valid Bearer token.
-# Returns: 200 with user profile.
-# ─────────────────────────────────────────
-
-GET {{MedCorVis_HostAddress}}/api/v1/users/me
-Authorization: Bearer {{AccessToken}}
-
-###
-
-# ─────────────────────────────────────────
-# Users — Update Preferred Culture
-# Updates the authenticated user's preferred language.
-# Supported values: en, fr, de, fr-CH, de-CH
-# Requires: valid Bearer token.
-# Returns: 204 No Content.
-# ─────────────────────────────────────────
-
-PUT {{MedCorVis_HostAddress}}/api/v1/users/me/culture
-Content-Type: {{ContentType}}
-Authorization: Bearer {{AccessToken}}
-
-{
-  "culture": "de"
-}
-
-###
-
-# ─────────────────────────────────────────
 # Users — Update Profile
 # Updates the authenticated user's name and birth date.
 # Note: name and birth date changes are audit-logged.
 # Requires: valid Bearer token.
-# Returns: 200 with updated user profile.
+# Returns: 200 with updated profile.
 # ─────────────────────────────────────────
 
 PUT {{MedCorVis_HostAddress}}/api/v1/users/me/profile
@@ -53,74 +23,5 @@ Authorization: Bearer {{AccessToken}}
   "lastName": "Test Update",
   "birthDate": "1965-10-10"
 }
-
-###
-
-# ─────────────────────────────────────────
-# Users — Update Phone Number
-# Updates the authenticated user's phone number.
-# Phone number confirmation (SMS) is not yet implemented.
-# Requires: valid Bearer token.
-# Returns: 204 No Content.
-# ─────────────────────────────────────────
-
-PUT {{MedCorVis_HostAddress}}/api/v1/users/me/phone
-Content-Type: {{ContentType}}
-Authorization: Bearer {{AccessToken}}
-
-{
-  "phoneNumber": "+41 79 123 45 67"
-}
-
-###
-
-# ─────────────────────────────────────────
-# Users — Submit Deletion Request
-# Marks the authenticated user's account for deletion.
-# A pending request must be approved by Admin or MedicalSecretary.
-# Requires: valid Bearer token.
-# Returns: 204 No Content.
-# ─────────────────────────────────────────
-
-POST {{MedCorVis_HostAddress}}/api/v1/users/me/deletion-request
-Authorization: Bearer {{AccessToken}}
-
-###
-
-# ─────────────────────────────────────────
-# Users — Cancel Deletion Request
-# Cancels a pending deletion request submitted by the authenticated user.
-# Requires: valid Bearer token.
-# Returns: 204 No Content.
-# ─────────────────────────────────────────
-
-DELETE {{MedCorVis_HostAddress}}/api/v1/users/me/deletion-request
-Authorization: Bearer {{AccessToken}}
-
-###
-
-# ─────────────────────────────────────────
-# Users — Get Pending Deletion Requests (Admin / MedicalSecretary)
-# Returns all users with a pending deletion request, ordered by request date.
-# Requires: valid Bearer token with Admin or MedicalSecretary role.
-# Returns: 200 with list of pending requests.
-# ─────────────────────────────────────────
-
-GET {{MedCorVis_HostAddress}}/api/v1/users/deletion-requests
-Authorization: Bearer {{AccessToken}}
-
-###
-
-# ─────────────────────────────────────────
-# Users — Execute Deletion (Admin / MedicalSecretary)
-# Soft-deletes the user and anonymises all PII fields.
-# BirthDate is retained for statistical purposes.
-# Replace the Guid below with the target user's ID.
-# Requires: valid Bearer token with Admin or MedicalSecretary role.
-# Returns: 204 No Content.
-# ─────────────────────────────────────────
-
-POST {{MedCorVis_HostAddress}}/api/v1/users/00000000-0000-0000-0000-000000000000/delete
-Authorization: Bearer {{AccessToken}}
 
 ###

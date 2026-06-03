@@ -18,7 +18,7 @@ src/
   MedCorVis.Common                # Shared contracts, interfaces, and result types
   MedCorVis.Infrastructure        # Shared infrastructure (email via MailKit)
   MedCorVis.Modules.Identity      # Auth, JWT, refresh tokens, email confirmation
-  MedCorVis.Modules.Users         # User profile, culture preference, phone
+  MedCorVis.Modules.Users         # User profile management
   MedCorVis.Modules.Localization  # DB-backed translations, in-memory cache
   MedCorVis.Modules.CodeItems     # Healthcare reference data, multilingual labels
 
@@ -77,10 +77,10 @@ UseAuthorization
 
 Each module follows these layer rules:
 
-- **Domain** — entities, value objects, domain exceptions. No framework dependencies.
-- **Application** — services, interfaces, request/response contracts, error codes. No EF or infrastructure types.
-- **Infrastructure** — EF DbContext, repositories, migrations, seeders. Implements application interfaces.
-- **Presentation** — controllers. Calls application services only. No direct infrastructure access.
+- **Domain**: entities, value objects, domain exceptions. No framework dependencies.
+- **Application**: services, interfaces, request/response contracts, error codes. No EF or infrastructure types.
+- **Infrastructure**: EF DbContext, repositories, migrations, seeders. Implements application interfaces.
+- **Presentation**: controllers. Calls application services only. No direct infrastructure access.
 
 `*ServiceCollectionExtensions` classes are declared as `internal static`
 to keep registration logic scoped to the module.
@@ -138,7 +138,7 @@ with a per-field breakdown:
   "title": "Bad Request",
   "status": 400,
   "detail": "One or more validation errors occurred.",
-  "instance": "/api/v1/categories/1/items",
+  "instance": "/api/v1/code-items/categories/1/items",
   "traceId": "...",
   "errors": {
     "ValidFrom": ["ValidFrom must be before ValidTo."],
@@ -149,14 +149,13 @@ with a per-field breakdown:
 
 ## Cross-Module Communication
 
-Modules do not reference each other's assemblies where possible. Cross-module
-references use `Guid` only — no EF navigation properties across module boundaries.
-The one current exception is documented in the Users Module section.
+Modules do not reference each other's assemblies. 
+Cross-module references use `Guid` only. No EF navigation properties across module boundaries.
 
 `ICurrentUserService` (in `MedCorVis.Common`) is injected wherever business logic needs
 the caller's identity. User ID is always resolved from the validated JWT token.
 It is never accepted from a request body or URL parameter (IDOR prevention).
-Nested routes enforce parent ownership at the service layer — a child resource is
+Nested routes enforce parent ownership at the service layer. A child resource is
 only accessible when its stored parent ID matches the route (e.g. item.CategoryId
 must equal the categoryId in the URL). This applies to all modules.
 
@@ -173,6 +172,26 @@ already cryptographically random (high-entropy), so bcrypt is unnecessary.
 Token theft detection: if a revoked token is replayed and `ReplacedByTokenId` is set,
 the system treats it as a stolen token and revokes the entire token family for the user.
 
+A background service (`RefreshTokenCleanupService`) runs on a configurable interval to remove expired refresh tokens from the database.
+
+`AccountService` owns all operations that touch `ApplicationUser` outside of auth:
+culture preference, phone number, and the account deletion lifecycle. These are
+kept in Identity because they operate directly on `ApplicationUser`.
+
+The deletion workflow follows a request-and-approve pattern:
+
+1. User submits a deletion request via `POST /users/me/deletion-request`.
+2. Admin or MedicalSecretary reviews pending requests via `GET /users/deletion-requests`.
+3. Staff executes deletion via `POST /users/{id}/delete`.
+4. On execution, PII fields are anonymised in both `Identity.Users` and `Profiles.Users`.
+5. `BirthDate` is retained on the anonymised row for statistical purposes.
+
+The module exposes three controllers:
+
+- `AuthController`: registration, login, token refresh, logout, email confirmation. Route: `/auth`.
+- `AccountConsumerController`: self-service account endpoints for any authenticated user. Route: `/users`.
+- `AccountController`: staff-facing account endpoints for Admin and MedicalSecretary. Route: `/users`.
+
 ## Localization Module
 
 `IMessageLocalizer` and `ILocalizerCache` are two separate interfaces. The email service
@@ -180,10 +199,14 @@ depends only on `IMessageLocalizer`. Cache warmup and admin refresh depend only 
 `ILocalizerCache`. One implementation (`DbMessageLocalizer`) satisfies both.
 
 Translations are stored in SQL Server (`Localization` schema) and loaded into an
-in-memory cache on startup. The cache has no automatic expiry — it persists until
+in-memory cache on startup. The cache has no automatic expiry. It persists until
 an admin triggers a reload via the cache refresh endpoint, or the API restarts.
 
 The culture fallback chain is: `fr-CH → fr → en`.
+
+The module exposes one controller:
+
+- `LocalizationController`: admin CRUD for translations and cache management. Route: `/translations`.
 
 ## CodeItems Module
 
@@ -201,12 +224,10 @@ The module maintains its own translation table (`CodeItems.Translations`) separa
 
 The module exposes two controllers:
 
-- `CodeItemsController` — admin CRUD for categories, items, and translations.
-- `CodeItemsConsumerController` — read-only consumer endpoint. Returns active items
-  for a given category code with culture-resolved labels. Falls back to English when
-  no label exists for the requested culture, then falls back to the item code itself.
+- `CodeItemsController`: admin CRUD for categories, items, and translations. Route: `/code-items`.
+- `CodeItemsConsumerController`: read-only consumer endpoint. Returns active items for a given category code with culture-resolved labels. Route: `GET /code-items/lookup/{categoryCode}`.
 
-All item operations on nested routes (`/categories/{categoryId}/items/{id}`)
+All item operations on nested routes (`/code-items/categories/{categoryId}/items/{id}`)
 verify that the item's `CategoryId` matches the route parameter before proceeding.
 A mismatch returns `404 Not Found` to avoid confirming the resource exists elsewhere.
 
@@ -223,33 +244,17 @@ range validation. Any request contract with a date range can use it.
 
 ## Users Module
 
-The Users module owns profile data (`Profiles.Users`) and account lifecycle operations.
-It maintains a dedicated `UsersDbContext` with its own migrations and repository layer.
+The Users module owns profile data only. It has no dependency on the Identity project.
 
 Profile data (`FirstName`, `LastName`, `BirthDate`) lives in `Profiles.Users` via the
-`UserProfile` entity. Identity fields (`Email`, `PhoneNumber`, `PreferredCulture`,
-`IsActive`, `IsDeleted`, `DeletionRequestedAtUtc`) remain on `Identity.Users`.
+`UserProfile` entity. `UserProfileService` is the only service in this module.
+It implements `IUserProfileService` from `MedCorVis.Common`, which Identity also
+consumes for profile reads and anonymisation during deletion.
 
-The module exposes two controllers:
+The module exposes one controller:
 
-- `UsersController` — staff-facing endpoints for Admin and MedicalSecretary.
-- `UsersConsumerController` — self-service endpoints for any authenticated user.
-
-User deletion follows a request-and-approve workflow:
-
-1. User submits a deletion request via `POST /users/me/deletion-request`.
-2. Admin or MedicalSecretary reviews pending requests via `GET /users/deletion-requests`.
-3. Staff executes deletion via `POST /users/{id}/delete`.
-4. On execution, PII fields are anonymised in both `Identity.Users` and `Profiles.Users`.
-5. `BirthDate` is kept on the anonymised `UserProfile` row for statistical purposes.
-
-Cross-module boundary: `UserService` and `UserDeletionService` still inject
-`UserManager<ApplicationUser>` for culture, phone, and deletion lifecycle operations.
-This is a known architectural tradeoff — the deletion lifecycle (`RequestDeletion`,
-`CancelDeletionRequest`, `Delete`) is implemented as domain methods on `ApplicationUser`,
-which belongs to Identity. A future refactor will move deletion lifecycle management
-into an Identity-owned service interface, fully decoupling the Users module from
-the Identity project reference.
+- `UsersConsumerController`: self-service profile update for any authenticated user.
+  Route: `PUT /users/me/profile`.
 
 ## API Versioning
 
@@ -263,20 +268,21 @@ All routes are resource-based. They describe the resource, never the role or act
 ## Logging
 
 Structured logging uses Serilog with a Seq sink. All log messages use the
-`LoggerMessage.Define` pattern — messages are compiled at startup, not on each call.
+`LoggerMessage.Define` pattern. Messages are compiled at startup, not on each call.
 
 Log event ID ranges by module:
 
-| Range     | Owner                                 |
-|-----------|---------------------------------------|
-| 1000s     | Api (middleware)                      |
-| 2000s     | Identity / AuthService                |
-| 3000s     | Users                                 |
-| 4000s     | Localization                          |
-| 5001-5008 | Seeders (RoleSeeder, AdminUserSeeder) |
-| 6000s     | CodeItems                             |
-| 7000s     | Patients (next)                       |
-| 8000s     | Next available after Patients         |
+| Range     | Owner                                  |
+|-----------|----------------------------------------|
+| 1000s     | Api (middleware)                       |
+| 2000s     | Identity / AuthService                 |
+| 3001-3016 | Identity / AccountService              |
+| 3017-3018 | Users / UserProfileService             |
+| 4000s     | Localization                           |
+| 5001-5008 | Seeders (RoleSeeder, AdminUserSeeder)  |
+| 6000s     | CodeItems                              |
+| 7000s     | Patients (next)                        |
+| 8000s     | Next available after Patients          |
 
 ## Testing
 
@@ -293,4 +299,4 @@ one base class per service that wires up the SUT and shared helpers.
 
 ## Author
 
-Jerald James Capao — Software Engineer
+Jerald James Capao, Software Engineer

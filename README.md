@@ -1,8 +1,6 @@
 # MedCorVis
 
-MedCorVis is a healthcare API built as a backend engineering portfolio project showcasing .NET 10 modular monolith architecture with clean layer separation, 
-JWT authentication, refresh token rotation, and structured logging. 
-Built with ASP.NET Core, EF Core, and SQL Server.
+MedCorVis is a healthcare API built as a backend engineering portfolio project showcasing .NET 10 modular monolith architecture with clean layer separation, JWT authentication, refresh token rotation, and structured logging. Built with ASP.NET Core, EF Core, and SQL Server.
 
 ## The Story
 
@@ -12,28 +10,26 @@ I wanted a codebase where every decision has a reason I can defend, not just cod
 
 ## Implemented Modules
 
-**Identity** — JWT authentication with refresh token rotation, refresh token replay detection,
+**Identity**: JWT authentication with refresh token rotation, refresh token replay detection,
 SHA-256 token hashing, HttpOnly cookie delivery, email confirmation via MailKit,
-role-based access control, and a background cleanup service for expired refresh tokens.
+role-based access control, a background cleanup service for expired refresh tokens,
+and account management (culture preference, phone number, account deletion workflow).
+User ID is always resolved from the JWT token instead of client input to prevent IDOR.
 
-**Users** — profile management, culture preference, and account deletion workflow.
-Users submit deletion requests through a self-service endpoint. Admin and MedicalSecretary
-staff review and approve requests. On approval, PII fields are anonymised in place and
-the row is retained for referential integrity. User ID is always resolved from the JWT
-token instead of client input to prevent IDOR.
+**Users**: profile management. Stores and updates first name, last name, and birth date.
 
-**Localization** — translations stored in SQL Server, served from an in-memory cache
+**Localization**: translations stored in SQL Server, served from an in-memory cache
 with explicit admin-triggered refresh and a culture fallback chain (e.g. `fr-CH → fr → en`).
 Admins can create, update, and soft-delete translations without a code change or restart.
 
-**CodeItems** — admin-managed healthcare reference data (appointment types, patient classifications, doctor roles, and more). 
+**CodeItems**: admin-managed healthcare reference data (appointment types, patient classifications, doctor roles, and more). 
 Categories and items are multilingual, with labels resolved per request via ICurrentCultureService and a fallback to English. 
 Admins control activation, deactivation, soft delete, and sort order without a code change or restart. 
 Seed data covers Swiss clinic and hospital conventions in English, French, and German.
 
 ## Tests
 
-162 unit tests across four projects using xUnit, NSubstitute, and FluentAssertions.
+161 unit tests across four projects using xUnit, NSubstitute, and FluentAssertions.
 Service tests use substituted infrastructure dependencies. Domain tests call entity
 methods directly with no infrastructure involved.
 
@@ -167,14 +163,14 @@ Visit `http://localhost:5341` to browse and query structured logs in real time.
 
 ### Try the API with MedCorVis.http
 
-The repo includes `src/MedCorVis.Api/MedCorVis.http` with all endpoints
+The repo includes per-module `.http` files under `src/MedCorVis.Api/Http/` with all endpoints
 pre-configured and ready to run. It works in:
 
 - **JetBrains Rider**: built-in HTTP client, no setup needed
 - **Visual Studio**: built-in HTTP client, no setup needed
 - **VS Code**: install the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) extension by Huachao Mao
 
-Open the file, start the API first, then set `@AccessToken` to a token from a login or register response and run any request directly from your editor.
+Open any file, start the API first, then set `@AccessToken` to a token from a login or register response and run any request directly from your editor.
 
 ### Email (development)
 
@@ -202,7 +198,7 @@ Patients, Doctors, and Appointments modules are next.
 
 ## About the Author
 
-Jerald James Capao — Software Engineer
+Jerald James Capao, Software Engineer
 
 GitHub: [github.com/jeraldjamescapao](https://github.com/jeraldjamescapao)
 
