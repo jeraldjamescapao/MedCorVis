@@ -23,7 +23,6 @@ internal static class UsersModuleServiceCollectionExtensions
                 o => o.MigrationsAssembly("MedCorVis.Modules.Users")));
 
         services.AddScoped<IUserService, UserService>();
-        services.AddScoped<IUserDeletionService, UserDeletionService>();
         services.AddScoped<IUserProfileRepository, UserProfileRepository>();
         services.AddScoped<IUserProfileService, UserProfileService>();
 

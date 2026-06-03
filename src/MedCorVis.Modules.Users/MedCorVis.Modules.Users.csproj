@@ -16,7 +16,6 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\MedCorVis.Common\MedCorVis.Common.csproj" />
-        <ProjectReference Include="..\MedCorVis.Modules.Identity\MedCorVis.Modules.Identity.csproj" />
     </ItemGroup>
     <ItemGroup>
         <InternalsVisibleTo Include="MedCorVis.Modules.Users.Tests" />
