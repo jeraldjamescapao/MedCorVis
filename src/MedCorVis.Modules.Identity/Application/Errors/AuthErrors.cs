@@ -45,4 +45,10 @@ public static class AuthErrors
 
     public static readonly ResultError EmailAlreadyConfirmed =
         new("IDENTITY_AUTH_EMAIL_ALREADY_CONFIRMED", "Email address is already confirmed.");
+    
+    public static readonly ResultError InvalidPasswordResetToken =
+        new("IDENTITY_AUTH_INVALID_PASSWORD_RESET_TOKEN", "Invalid or expired password reset token.");
+
+    public static readonly ResultError PasswordResetFailed =
+        new("IDENTITY_AUTH_PASSWORD_RESET_FAILED", "Failed to reset password.");
 }

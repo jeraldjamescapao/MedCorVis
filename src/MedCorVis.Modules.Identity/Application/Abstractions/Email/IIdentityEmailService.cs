@@ -11,4 +11,12 @@ internal interface IIdentityEmailService
         string encodedToken,
         string culture,
         CancellationToken ct = default);
+    
+    Task SendPasswordResetEmailAsync(
+        Guid userId,
+        string email,
+        string fullName,
+        string encodedToken,
+        string culture,
+        CancellationToken ct = default);
 }

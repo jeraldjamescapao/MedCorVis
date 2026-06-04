@@ -17,4 +17,15 @@ public static class TranslationKeys
         public const string Ignore      = "email.confirmation.ignore";
         public const string Closing     = "email.confirmation.closing";
     }
+    
+    public static class PasswordReset
+    {
+        public const string Subject     = "email.password_reset.subject";
+        public const string Greeting    = "email.password_reset.greeting";
+        public const string Instruction = "email.password_reset.instruction";
+        public const string LinkLabel   = "email.password_reset.link_label";
+        public const string Expiry      = "email.password_reset.expiry";
+        public const string Ignore      = "email.password_reset.ignore";
+        public const string Closing     = "email.password_reset.closing";
+    }
 }

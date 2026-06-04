@@ -24,7 +24,14 @@ internal static class TranslationSeeder
             [TranslationKeys.EmailConfirmation.LinkLabel]   = "Confirm Email Address",
             [TranslationKeys.EmailConfirmation.Expiry]      = "This link expires in {0} hours.",
             [TranslationKeys.EmailConfirmation.Ignore]      = "If you did not create an account, you can safely ignore this email.",
-            [TranslationKeys.EmailConfirmation.Closing]     = "Yours Truly," 
+            [TranslationKeys.EmailConfirmation.Closing]     = "Yours Truly,",
+            [TranslationKeys.PasswordReset.Subject]     = "Reset your password",
+            [TranslationKeys.PasswordReset.Greeting]    = "Hi {0},",
+            [TranslationKeys.PasswordReset.Instruction] = "We received a request to reset your password. Click the link below to set a new one.",
+            [TranslationKeys.PasswordReset.LinkLabel]   = "Reset Password",
+            [TranslationKeys.PasswordReset.Expiry]      = "This link expires in {0} hours.",
+            [TranslationKeys.PasswordReset.Ignore]      = "If you did not request a password reset, you can safely ignore this email.",
+            [TranslationKeys.PasswordReset.Closing]     = "Yours Truly,"
         },
         [SupportedCultures.French] = new(StringComparer.OrdinalIgnoreCase)
         {
@@ -34,7 +41,14 @@ internal static class TranslationSeeder
             [TranslationKeys.EmailConfirmation.LinkLabel]   = "Confirmer l'adresse e-mail",
             [TranslationKeys.EmailConfirmation.Expiry]      = "Ce lien expire dans {0} heures.",
             [TranslationKeys.EmailConfirmation.Ignore]      = "Si vous n'avez pas créé de compte, vous pouvez ignorer cet e-mail.",
-            [TranslationKeys.EmailConfirmation.Closing]     = "Cordialement,"
+            [TranslationKeys.EmailConfirmation.Closing]     = "Cordialement,",
+            [TranslationKeys.PasswordReset.Subject]     = "Réinitialisez votre mot de passe",
+            [TranslationKeys.PasswordReset.Greeting]    = "Bonjour {0},",
+            [TranslationKeys.PasswordReset.Instruction] = "Nous avons reçu une demande de réinitialisation de votre mot de passe. Cliquez sur le lien ci-dessous pour en définir un nouveau.",
+            [TranslationKeys.PasswordReset.LinkLabel]   = "Réinitialiser le mot de passe",
+            [TranslationKeys.PasswordReset.Expiry]      = "Ce lien expire dans {0} heures.",
+            [TranslationKeys.PasswordReset.Ignore]      = "Si vous n'avez pas demandé de réinitialisation, vous pouvez ignorer cet e-mail.",
+            [TranslationKeys.PasswordReset.Closing]     = "Cordialement,"
         },
         [SupportedCultures.German] = new(StringComparer.OrdinalIgnoreCase)
         {
@@ -44,7 +58,14 @@ internal static class TranslationSeeder
             [TranslationKeys.EmailConfirmation.LinkLabel]   = "E-Mail-Adresse bestätigen",
             [TranslationKeys.EmailConfirmation.Expiry]      = "Dieser Link läuft in {0} Stunden ab.",
             [TranslationKeys.EmailConfirmation.Ignore]      = "Wenn Sie kein Konto erstellt haben, können Sie diese E-Mail ignorieren.",
-            [TranslationKeys.EmailConfirmation.Closing]     = "Mit freundlichen Grüßen,"
+            [TranslationKeys.EmailConfirmation.Closing]     = "Mit freundlichen Grüßen,",
+            [TranslationKeys.PasswordReset.Subject]     = "Setzen Sie Ihr Passwort zurück",
+            [TranslationKeys.PasswordReset.Greeting]    = "Hallo {0},",
+            [TranslationKeys.PasswordReset.Instruction] = "Wir haben eine Anfrage zum Zurücksetzen Ihres Passworts erhalten. Klicken Sie auf den folgenden Link, um ein neues Passwort festzulegen.",
+            [TranslationKeys.PasswordReset.LinkLabel]   = "Passwort zurücksetzen",
+            [TranslationKeys.PasswordReset.Expiry]      = "Dieser Link läuft in {0} Stunden ab.",
+            [TranslationKeys.PasswordReset.Ignore]      = "Wenn Sie keine Passwortzurücksetzung angefordert haben, können Sie diese E-Mail ignorieren.",
+            [TranslationKeys.PasswordReset.Closing]     = "Mit freundlichen Grüßen,",
         }
     };
     

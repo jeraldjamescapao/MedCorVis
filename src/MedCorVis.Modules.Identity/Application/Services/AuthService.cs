@@ -25,6 +25,8 @@ using System.Text;
 
 internal sealed class AuthService : IAuthService
 {
+    #region Fields
+    
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly ICurrentCultureService _currentCultureService;
     private readonly IUserCultureCache _userCultureCache;
@@ -35,6 +37,10 @@ internal sealed class AuthService : IAuthService
     private readonly IIdentityUnitOfWork _unitOfWork;
     private readonly JwtSettings _jwtSettings;
     private readonly ILogger<AuthService> _logger;
+    
+    #endregion
+    
+    #region Constructors
 
     public AuthService(
         UserManager<ApplicationUser> userManager,
@@ -59,6 +65,10 @@ internal sealed class AuthService : IAuthService
         _jwtSettings = jwtSettings.Value;
         _logger = logger;
     }
+    
+    #endregion
+    
+    #region Methods
     
     public async Task<Result<RegisterResponse>> RegisterAsync(
         RegisterRequest request, CancellationToken ct = default)
@@ -374,6 +384,72 @@ internal sealed class AuthService : IAuthService
 
         return Result<bool>.Success(true);
     }
+    
+    public async Task<Result<bool>> ForgotPasswordAsync(
+        ForgotPasswordRequest request, CancellationToken ct = default)
+    {
+        var user = await _userManager.FindByEmailAsync(request.Email);
+
+        // Always return success to avoid email enumeration attacks.
+        if (user is null || !user.IsActive || !user.EmailConfirmed)
+            return Result<bool>.Success(true);
+
+        try
+        {
+            var rawToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(rawToken));
+            var culture = user.PreferredCulture ?? _currentCultureService.Culture;
+            var fullName = await _userProfileService.GetFullNameAsync(user.Id, ct) ?? user.Email!;
+
+            await _identityEmailService.SendPasswordResetEmailAsync(
+                user.Id, user.Email!, fullName, encodedToken, culture, ct);
+
+            AuthLogMessages.ForgotPasswordEmailSent(_logger, user.Id, null);
+        }
+        catch (EmailDeliveryException ex)
+        {
+            AuthLogMessages.ForgotPasswordEmailDeliveryFailed(_logger, ex);
+            return Result<bool>.ServiceUnavailable(AuthErrors.EmailDeliveryFailed);
+        }
+
+        return Result<bool>.Success(true);
+    }
+    
+    public async Task<Result<bool>> ResetPasswordAsync(
+        ResetPasswordRequest request, CancellationToken ct = default)
+    {
+        var user = await _userManager.FindByIdAsync(request.UserId.ToString());
+        if (user is null || !user.IsActive)
+        {
+            AuthLogMessages.ResetPasswordUserNotFound(_logger, request.UserId, null);
+            return Result<bool>.UnprocessableEntity(AuthErrors.InvalidPasswordResetToken);
+        }
+
+        var decodedToken = DecodeToken(request.Token);
+        var result = await _userManager.ResetPasswordAsync(user, decodedToken, request.NewPassword);
+        if (!result.Succeeded)
+        {
+            if (result.Errors.Any(e => e.Code is "InvalidToken" or "ExpiredToken"))
+            {
+                AuthLogMessages.ResetPasswordInvalidToken(_logger, user.Id, null);
+                return Result<bool>.UnprocessableEntity(AuthErrors.InvalidPasswordResetToken);
+            }
+
+            AuthLogMessages.ResetPasswordFailed(_logger, user.Id, null);
+            return Result<bool>.Internal(AuthErrors.PasswordResetFailed);
+        }
+
+        await _refreshTokenRepository.RevokeAllForUserAsync(user.Id, ct);
+        await _refreshTokenRepository.SaveChangesAsync(ct);
+
+        AuthLogMessages.ResetPasswordSucceeded(_logger, user.Id, null);
+
+        return Result<bool>.Success(true);
+    }
+    
+    #endregion
+    
+    #region Helpers
 
     private async Task<(string AccessToken, string RawRefreshToken)> IssueTokenPairAsync(
         ApplicationUser user,
@@ -411,4 +487,6 @@ internal sealed class AuthService : IAuthService
         var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(rawToken));
         return Convert.ToHexString(bytes).ToLowerInvariant();
     }
+    
+    #endregion
 }

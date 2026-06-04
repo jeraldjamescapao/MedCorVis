@@ -114,6 +114,24 @@ public sealed class AuthController : BaseApiController
         return NoContent();
     }
     
+    [HttpPost("forgot-password")]
+    public async Task<IActionResult> ForgotPasswordAsync(
+        [FromBody] ForgotPasswordRequest request, CancellationToken ct)
+    {
+        var result = await _authService.ForgotPasswordAsync(request, ct);
+        return ToActionResult(result);
+    }
+
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPasswordAsync(
+        [FromBody] ResetPasswordRequest request, CancellationToken ct)
+    {
+        var result = await _authService.ResetPasswordAsync(request, ct);
+        return ToActionResult(result);
+    }
+    
+    #region Helpers
+    
     private void AppendRefreshTokenCookie(string rawRefreshToken, DateTimeOffset expiresAt)
     {
         Response.Cookies.Append(CookieNames.RefreshToken, rawRefreshToken, new CookieOptions
@@ -133,4 +151,6 @@ public sealed class AuthController : BaseApiController
             Path = GetVersionedPath("auth")
         });
     }
+    
+    #endregion
 }

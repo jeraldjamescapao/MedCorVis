@@ -1,0 +1,9 @@
+namespace MedCorVis.Modules.Identity.Application.Contracts.Authentication.Requests;
+
+using System.ComponentModel.DataAnnotations;
+using User = MedCorVis.Modules.Identity.Domain.Users.ApplicationUser;
+
+public sealed record ResetPasswordRequest(
+    [Required] Guid UserId,
+    [Required] string Token,
+    [Required] [MinLength(User.PasswordMinLength)] [MaxLength(User.PasswordMaxLength)] string NewPassword);

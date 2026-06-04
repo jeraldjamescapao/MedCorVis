@@ -199,4 +199,48 @@ internal static class AuthLogMessages
             "Expired refresh token cleanup failed.");
 
     #endregion
+    
+    #region ForgotPassword
+
+    public static readonly Action<ILogger, Guid, Exception?> ForgotPasswordEmailSent =
+        LoggerMessage.Define<Guid>(
+            LogLevel.Information,
+            new EventId(2070, "ForgotPasswordEmailSent"),
+            "Password reset email sent for user {UserId}.");
+
+    public static readonly Action<ILogger, Exception?> ForgotPasswordEmailDeliveryFailed =
+        LoggerMessage.Define(
+            LogLevel.Error,
+            new EventId(2071, "ForgotPasswordEmailDeliveryFailed"),
+            "Password reset email delivery failed.");
+
+    #endregion
+    
+    #region ResetPassword
+
+    public static readonly Action<ILogger, Guid, Exception?> ResetPasswordUserNotFound =
+        LoggerMessage.Define<Guid>(
+            LogLevel.Warning,
+            new EventId(2080, "ResetPasswordUserNotFound"),
+            "Password reset failed: user {UserId} not found.");
+
+    public static readonly Action<ILogger, Guid, Exception?> ResetPasswordInvalidToken =
+        LoggerMessage.Define<Guid>(
+            LogLevel.Warning,
+            new EventId(2081, "ResetPasswordInvalidToken"),
+            "Password reset failed: invalid or expired token for user {UserId}.");
+
+    public static readonly Action<ILogger, Guid, Exception?> ResetPasswordFailed =
+        LoggerMessage.Define<Guid>(
+            LogLevel.Error,
+            new EventId(2082, "ResetPasswordFailed"),
+            "Password reset failed for user {UserId}: identity returned errors.");
+
+    public static readonly Action<ILogger, Guid, Exception?> ResetPasswordSucceeded =
+        LoggerMessage.Define<Guid>(
+            LogLevel.Information,
+            new EventId(2083, "ResetPasswordSucceeded"),
+            "Password reset succeeded for user {UserId}. All sessions revoked.");
+
+    #endregion
 }
