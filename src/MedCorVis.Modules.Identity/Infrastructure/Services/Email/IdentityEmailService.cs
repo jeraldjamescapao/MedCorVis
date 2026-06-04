@@ -45,7 +45,7 @@ internal sealed class IdentityEmailService : IIdentityEmailService
             Instruction: _localizer.Get(TranslationKeys.EmailConfirmation.Instruction, culture),
             LinkLabel: _localizer.Get(TranslationKeys.EmailConfirmation.LinkLabel, culture),
             Expiry: string.Format(_localizer.Get(TranslationKeys.EmailConfirmation.Expiry, culture), 
-                _identityTokenSettings.EmailConfirmationExpirationInHours),
+                _identityTokenSettings.TokenExpirationInHours),
             Ignore: _localizer.Get(TranslationKeys.EmailConfirmation.Ignore, culture),
             Closing: _localizer.Get(TranslationKeys.EmailConfirmation.Closing, culture),
             AppName: _localizer.Get(TranslationKeys.AppGeneral.Name, culture));

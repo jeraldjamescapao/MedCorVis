@@ -99,7 +99,7 @@ internal static class IdentityModuleServiceCollectionExtensions
                 .Get<IdentityTokenSettings>() 
                     ?? throw new InvalidOperationException("IdentityTokens settings are not configured.");
             
-            options.TokenLifespan = TimeSpan.FromHours(tokenSettings.EmailConfirmationExpirationInHours);
+            options.TokenLifespan = TimeSpan.FromHours(tokenSettings.TokenExpirationInHours);
         });
         
         services.AddOptions<RefreshTokenCleanupSettings>()

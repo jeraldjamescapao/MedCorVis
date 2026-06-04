@@ -11,5 +11,5 @@ internal sealed class IdentityTokenSettings
     
     public string NormalizedEmailConfirmationPath => "/" + EmailConfirmationPath.TrimStart('/');
     
-    [Range(1, int.MaxValue)] public int EmailConfirmationExpirationInHours { get; init; }
+    [Range(1, int.MaxValue)] public int TokenExpirationInHours { get; init; }
 }
