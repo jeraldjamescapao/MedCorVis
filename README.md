@@ -15,6 +15,7 @@ SHA-256 token hashing, HttpOnly cookie delivery, email confirmation via MailKit,
 role-based access control, a background cleanup service for expired refresh tokens,
 and account management (culture preference, phone number, account deletion workflow).
 User ID is always resolved from the JWT token instead of client input to prevent IDOR.
+Password recovery via forgot-password and reset-password flows with anti-enumeration protection.
 
 **Users**: profile management. Stores and updates first name, last name, and birth date.
 
@@ -29,7 +30,7 @@ Seed data covers Swiss clinic and hospital conventions in English, French, and G
 
 ## Tests
 
-161 unit tests across four projects using xUnit, NSubstitute, and FluentAssertions.
+171 unit tests across four projects using xUnit, NSubstitute, and FluentAssertions.
 Service tests use substituted infrastructure dependencies. Domain tests call entity
 methods directly with no infrastructure involved.
 

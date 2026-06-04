@@ -123,3 +123,37 @@ Content-Type: {{ContentType}}
 }
 
 ###
+
+# ─────────────────────────────────────────
+# Auth — Forgot Password
+# Sends a password reset email if the account exists, is active, and is confirmed.
+# Silently succeeds even if the email is unknown (anti-enumeration).
+# Returns: 204 No Content.
+# ─────────────────────────────────────────
+
+POST {{MedCorVis_HostAddress}}/api/v1/auth/forgot-password
+Content-Type: {{ContentType}}
+
+{
+  "email": "dayton43@ethereal.email"
+}
+
+###
+
+# ─────────────────────────────────────────
+# Auth — Reset Password
+# Paste the userId and token from the password reset email link here.
+# Resets the password and revokes all active sessions for the user.
+# Returns: 204 No Content.
+# ─────────────────────────────────────────
+
+POST {{MedCorVis_HostAddress}}/api/v1/auth/reset-password
+Content-Type: {{ContentType}}
+
+{
+  "userId": "00000000-0000-0000-0000-000000000000",
+  "token": "PASTE_TOKEN_HERE",
+  "newPassword": "NewPassword123!"
+}
+
+###
