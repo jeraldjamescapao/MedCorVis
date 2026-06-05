@@ -30,7 +30,7 @@ Seed data covers Swiss clinic and hospital conventions in English, French, and G
 
 ## Tests
 
-176 unit tests across four projects using xUnit, NSubstitute, and FluentAssertions.
+193 unit tests across four projects using xUnit, NSubstitute, and FluentAssertions.
 Service tests use substituted infrastructure dependencies. Domain tests call entity
 methods directly with no infrastructure involved.
 
