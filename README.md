@@ -13,7 +13,7 @@ I wanted a codebase where every decision has a reason I can defend, not just cod
 **Identity**: JWT authentication with refresh token rotation, refresh token replay detection,
 SHA-256 token hashing, HttpOnly cookie delivery, email confirmation via MailKit,
 role-based access control, a background cleanup service for expired refresh tokens,
-and account management (culture preference, phone number, account deletion workflow).
+and account management (culture preference, phone number, account deletion workflow, account activation and deactivation).
 User ID is always resolved from the JWT token instead of client input to prevent IDOR.
 Password recovery via forgot-password and reset-password flows with anti-enumeration protection.
 Each refresh token captures the IP address, user agent, and revocation timestamp for per-session audit trails.
