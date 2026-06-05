@@ -119,4 +119,44 @@ internal static class AccountLogMessages
             "User {TargetUserId} deleted and anonymised by actor {ActorId}.");
 
     #endregion
+    
+    #region Activate / Deactivate
+
+    public static readonly Action<ILogger, Guid, Exception?> ActivateUserNotFound =
+        LoggerMessage.Define<Guid>(
+            LogLevel.Warning,
+            new EventId(3019, "ActivateUserNotFound"),
+            "Activation failed: user {UserId} not found.");
+
+    public static readonly Action<ILogger, Guid, Exception?> UserAlreadyActive =
+        LoggerMessage.Define<Guid>(
+            LogLevel.Warning,
+            new EventId(3020, "UserAlreadyActive"),
+            "Activation skipped: user {UserId} is already active.");
+
+    public static readonly Action<ILogger, Guid, Guid, Exception?> UserActivated =
+        LoggerMessage.Define<Guid, Guid>(
+            LogLevel.Information,
+            new EventId(3021, "UserActivated"),
+            "User {TargetUserId} activated by actor {ActorId}.");
+
+    public static readonly Action<ILogger, Guid, Exception?> DeactivateUserNotFound =
+        LoggerMessage.Define<Guid>(
+            LogLevel.Warning,
+            new EventId(3022, "DeactivateUserNotFound"),
+            "Deactivation failed: user {UserId} not found.");
+
+    public static readonly Action<ILogger, Guid, Exception?> UserAlreadyInactive =
+        LoggerMessage.Define<Guid>(
+            LogLevel.Warning,
+            new EventId(3023, "UserAlreadyInactive"),
+            "Deactivation skipped: user {UserId} is already inactive.");
+
+    public static readonly Action<ILogger, Guid, Guid, Exception?> UserDeactivated =
+        LoggerMessage.Define<Guid, Guid>(
+            LogLevel.Information,
+            new EventId(3024, "UserDeactivated"),
+            "User {TargetUserId} deactivated by actor {ActorId}.");
+
+    #endregion
 }

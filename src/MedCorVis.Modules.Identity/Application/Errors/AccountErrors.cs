@@ -30,4 +30,10 @@ internal static class AccountErrors
 
     public static readonly ResultError AlreadyDeleted =
         new("IDENTITY_ACCOUNT_ALREADY_DELETED", "User is already deleted.");
+    
+    public static readonly ResultError AlreadyActive =
+        new("IDENTITY_ACCOUNT_ALREADY_ACTIVE", "User account is already active.");
+
+    public static readonly ResultError AlreadyInactive =
+        new("IDENTITY_ACCOUNT_ALREADY_INACTIVE", "User account is already inactive.");
 }

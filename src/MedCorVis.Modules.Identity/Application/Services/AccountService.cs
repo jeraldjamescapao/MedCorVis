@@ -221,6 +221,64 @@ internal sealed class AccountService : IAccountService
         return Result<bool>.Success(true);
     }
     
+    public async Task<Result<bool>> ActivateUserAsync(
+        Guid actorId, Guid targetUserId, CancellationToken ct = default)
+    {
+        var user = await _userManager.FindByIdAsync(targetUserId.ToString());
+        if (user is null)
+        {
+            AccountLogMessages.ActivateUserNotFound(_logger, targetUserId, null);
+            return Result<bool>.NotFound(AccountErrors.UserNotFound);
+        }
+
+        if (user.IsActive)
+        {
+            AccountLogMessages.UserAlreadyActive(_logger, targetUserId, null);
+            return Result<bool>.Conflict(AccountErrors.AlreadyActive);
+        }
+
+        user.Activate(actorId.ToString());
+
+        var result = await _userManager.UpdateAsync(user);
+        if (!result.Succeeded)
+        {
+            AccountLogMessages.UserDeletionFailed(_logger, targetUserId, null);
+            return Result<bool>.Internal(AccountErrors.DeletionFailed);
+        }
+
+        AccountLogMessages.UserActivated(_logger, targetUserId, actorId, null);
+        return Result<bool>.Success(true);
+    }
+
+    public async Task<Result<bool>> DeactivateUserAsync(
+        Guid actorId, Guid targetUserId, CancellationToken ct = default)
+    {
+        var user = await _userManager.FindByIdAsync(targetUserId.ToString());
+        if (user is null)
+        {
+            AccountLogMessages.DeactivateUserNotFound(_logger, targetUserId, null);
+            return Result<bool>.NotFound(AccountErrors.UserNotFound);
+        }
+
+        if (!user.IsActive)
+        {
+            AccountLogMessages.UserAlreadyInactive(_logger, targetUserId, null);
+            return Result<bool>.Conflict(AccountErrors.AlreadyInactive);
+        }
+
+        user.Deactivate(actorId.ToString());
+
+        var result = await _userManager.UpdateAsync(user);
+        if (!result.Succeeded)
+        {
+            AccountLogMessages.UserDeletionFailed(_logger, targetUserId, null);
+            return Result<bool>.Internal(AccountErrors.DeletionFailed);
+        }
+
+        AccountLogMessages.UserDeactivated(_logger, targetUserId, actorId, null);
+        return Result<bool>.Success(true);
+    }
+    
     private static AccountResponse MapToResponse(ApplicationUser user, UserProfileData profile)
     {
         return new AccountResponse(

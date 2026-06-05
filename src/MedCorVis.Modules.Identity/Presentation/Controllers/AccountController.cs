@@ -42,4 +42,24 @@ public sealed class AccountController : BaseApiController
         var result = await _accountService.ExecuteDeletionAsync(actorId, id, ct);
         return result.IsFailure ? ToActionResult(result) : NoContent();
     }
+    
+    [HttpPut("{id:guid}/activate")]
+    public async Task<IActionResult> ActivateUserAsync(Guid id, CancellationToken ct)
+    {
+        if (!TryGetCurrentUserId(_currentUserService, out var actorId))
+            return ToActionResult(Result<bool>.Unauthorized(AccountErrors.InvalidToken));
+
+        var result = await _accountService.ActivateUserAsync(actorId, id, ct);
+        return result.IsFailure ? ToActionResult(result) : NoContent();
+    }
+
+    [HttpPut("{id:guid}/deactivate")]
+    public async Task<IActionResult> DeactivateUserAsync(Guid id, CancellationToken ct)
+    {
+        if (!TryGetCurrentUserId(_currentUserService, out var actorId))
+            return ToActionResult(Result<bool>.Unauthorized(AccountErrors.InvalidToken));
+
+        var result = await _accountService.DeactivateUserAsync(actorId, id, ct);
+        return result.IsFailure ? ToActionResult(result) : NoContent();
+    }
 }

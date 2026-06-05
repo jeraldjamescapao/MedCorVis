@@ -104,3 +104,27 @@ DELETE {{MedCorVis_HostAddress}}/api/v1/users/00000000-0000-0000-0000-0000000000
 Authorization: Bearer {{AccessToken}}
 
 ###
+
+# ─────────────────────────────────────────
+# Account — Activate User (Admin / MedicalSecretary)
+# Reactivates a deactivated user account.
+# Replace the Guid below with the target user's ID.
+# Requires: valid Bearer token with Admin or MedicalSecretary role.
+# Returns: 204 No Content.
+# ─────────────────────────────────────────
+
+PUT {{MedCorVis_HostAddress}}/api/v1/users/00000000-0000-0000-0000-000000000000/activate
+Authorization: Bearer {{AccessToken}}
+
+###
+
+# ─────────────────────────────────────────
+# Account — Deactivate User (Admin / MedicalSecretary)
+# Deactivates a user account without deleting it.
+# Replace the Guid below with the target user's ID.
+# Requires: valid Bearer token with Admin or MedicalSecretary role.
+# Returns: 204 No Content.
+# ─────────────────────────────────────────
+
+PUT {{MedCorVis_HostAddress}}/api/v1/users/00000000-0000-0000-0000-000000000000/deactivate
+Authorization: Bearer {{AccessToken}}

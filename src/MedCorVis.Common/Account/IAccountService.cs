@@ -11,4 +11,6 @@ public interface IAccountService
     Task<Result<bool>> CancelDeletionRequestAsync(Guid userId, CancellationToken ct = default);
     Task<Result<IReadOnlyList<DeletionRequestResponse>>> GetPendingDeletionRequestsAsync(CancellationToken ct = default);
     Task<Result<bool>> ExecuteDeletionAsync(Guid actorId, Guid targetUserId, CancellationToken ct = default);
+    Task<Result<bool>> ActivateUserAsync(Guid actorId, Guid targetUserId, CancellationToken ct = default);
+    Task<Result<bool>> DeactivateUserAsync(Guid actorId, Guid targetUserId, CancellationToken ct = default);
 }

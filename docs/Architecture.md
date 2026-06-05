@@ -199,7 +199,8 @@ The module exposes three controllers:
   email confirmation, resend confirmation email, password recovery (forgot-password,
   reset-password), and password change. Route: `/auth`.
 - `AccountConsumerController`: self-service account endpoints for any authenticated user. Route: `/users`.
-- `AccountController`: staff-facing account endpoints for Admin and MedicalSecretary. Route: `/users`.
+- `AccountController`: staff-facing account endpoints for Admin and MedicalSecretary.
+  Manage pending deletion requests, execute deletion, and activate or deactivate accounts. Route: `/users`.
 
 ## Localization Module
 
@@ -294,7 +295,7 @@ Log event ID ranges by module:
 | 2070-2071 | Identity / AuthService / ForgotPassword      |
 | 2080-2083 | Identity / AuthService / ResetPassword       |
 | 2090-2092 | Identity / AuthService / ChangePassword      |
-| 3001-3016 | Identity / AccountService                    |
+| 3001-3024 | Identity / AccountService                    |
 | 3017-3018 | Users / UserProfileService                   |
 | 4000s     | Localization                                 |
 | 5001-5008 | Seeders (RoleSeeder, AdminUserSeeder)        |
