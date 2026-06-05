@@ -169,6 +169,13 @@ Refresh token rotation uses SHA-256 hashing. The raw token is sent to the client
 only the hash is stored. SHA-256 is appropriate here because refresh tokens are
 already cryptographically random (high-entropy), so bcrypt is unnecessary.
 
+Each refresh token stores the IP address and user agent captured at creation time, 
+and a RevokedAtUtc timestamp set when the token is revoked. 
+This gives a per-session audit trail without a separate sessions table. 
+ISessionContext in MedCorVis.Common abstracts the HTTP context read so AuthService stays free of framework types. 
+The implementation in Identity infrastructure reads from IHttpContextAccessor. 
+User agent strings are truncated to 500 characters at write time.
+
 Token theft detection: if a revoked token is replayed and `ReplacedByTokenId` is set,
 the system treats it as a stolen token and revokes the entire token family for the user.
 
