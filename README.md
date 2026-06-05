@@ -16,6 +16,7 @@ role-based access control, a background cleanup service for expired refresh toke
 and account management (culture preference, phone number, account deletion workflow).
 User ID is always resolved from the JWT token instead of client input to prevent IDOR.
 Password recovery via forgot-password and reset-password flows with anti-enumeration protection.
+Each refresh token captures the IP address, user agent, and revocation timestamp for per-session audit trails.
 
 **Users**: profile management. Stores and updates first name, last name, and birth date.
 

@@ -195,8 +195,9 @@ The deletion workflow follows a request-and-approve pattern:
 
 The module exposes three controllers:
 
-- `AuthController`: registration, login, token refresh, logout, email confirmation,
-  password recovery (forgot-password, reset-password), and password change. Route: `/auth`.
+- `AuthController`: registration, login, token refresh, logout, logout from all devices,
+  email confirmation, resend confirmation email, password recovery (forgot-password,
+  reset-password), and password change. Route: `/auth`.
 - `AccountConsumerController`: self-service account endpoints for any authenticated user. Route: `/users`.
 - `AccountController`: staff-facing account endpoints for Admin and MedicalSecretary. Route: `/users`.
 
@@ -313,6 +314,8 @@ for both the test project and `DynamicProxyGenAssembly2`.
 
 Test projects mirror the source structure: one test class file per method group,
 one base class per service that wires up the SUT and shared helpers.
+Domain tests live under `Domain/` within each test project, separate from
+service tests under `Application/Services/`.
 
 ## Author
 
