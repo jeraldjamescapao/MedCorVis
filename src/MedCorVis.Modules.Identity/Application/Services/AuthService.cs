@@ -27,6 +27,7 @@ internal sealed class AuthService : IAuthService
 {
     #region Fields
     
+    private readonly ISessionContext _sessionContext;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly ICurrentCultureService _currentCultureService;
     private readonly IUserCultureCache _userCultureCache;
@@ -43,6 +44,7 @@ internal sealed class AuthService : IAuthService
     #region Constructors
 
     public AuthService(
+        ISessionContext sessionContext,
         UserManager<ApplicationUser> userManager,
         ICurrentCultureService currentCultureService,
         IUserCultureCache userCultureCache,
@@ -54,6 +56,7 @@ internal sealed class AuthService : IAuthService
         IOptions<JwtSettings> jwtSettings,
         ILogger<AuthService> logger)
     {
+        _sessionContext = sessionContext;
         _userManager = userManager;
         _currentCultureService = currentCultureService;
         _userCultureCache = userCultureCache;
@@ -496,7 +499,9 @@ internal sealed class AuthService : IAuthService
             user.Id,
             Guid.NewGuid(),
             HashToken(rawRefreshToken),
-            DateTimeOffset.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationInDays));
+            DateTimeOffset.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationInDays),
+            _sessionContext.IpAddress,
+            _sessionContext.UserAgent);
 
         await _refreshTokenRepository.AddAsync(refreshToken, ct);
 

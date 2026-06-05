@@ -7,6 +7,8 @@ internal sealed class RefreshToken
     #region Constants
     
     public const int TokenMaxLength = 500;
+    public const int IpAddressMaxLength = 100;
+    public const int UserAgentMaxLength = 500;
     
     #endregion
     
@@ -20,6 +22,9 @@ internal sealed class RefreshToken
     public DateTimeOffset CreatedAtUtc { get; private set; }
     public bool IsRevoked { get; private set; }
     public Guid? ReplacedByTokenId { get; private set; }
+    public DateTimeOffset? RevokedAtUtc { get; private set; }
+    public string? IpAddress { get; private set; }
+    public string? UserAgent { get; private set; }
     
     public bool IsExpired => DateTimeOffset.UtcNow >= ExpiresAtUtc;
     public bool IsActive => !IsRevoked && !IsExpired;
@@ -34,7 +39,9 @@ internal sealed class RefreshToken
         Guid userId, 
         Guid familyId, 
         string token, 
-        DateTimeOffset expiresAtUtc)
+        DateTimeOffset expiresAtUtc,
+        string? ipAddress,
+        string? userAgent)
     {
         Id = Guid.NewGuid();
         UserId = userId;
@@ -43,6 +50,8 @@ internal sealed class RefreshToken
         ExpiresAtUtc = expiresAtUtc;
         CreatedAtUtc = DateTimeOffset.UtcNow;
         IsRevoked = false;
+        IpAddress = ipAddress?[..Math.Min(ipAddress.Length, IpAddressMaxLength)];
+        UserAgent = userAgent?[..Math.Min(userAgent.Length, UserAgentMaxLength)];
     }
     
     #endregion
@@ -53,7 +62,9 @@ internal sealed class RefreshToken
         Guid userId, 
         Guid familyId, 
         string token, 
-        DateTimeOffset expiresAtUtc)
+        DateTimeOffset expiresAtUtc,
+        string? ipAddress = null,
+        string? userAgent = null)
     {
         DomainGuards.RequireNonEmptyGuid(
             userId, "DOMAIN_TOKEN_INVALID_USER_ID", "UserId cannot be empty.");
@@ -64,7 +75,7 @@ internal sealed class RefreshToken
         DomainGuards.RequireFutureDate(
             expiresAtUtc, "DOMAIN_TOKEN_INVALID_EXPIRY", "ExpiresAtUtc must be in the future.");
         
-        return new RefreshToken(userId, familyId, token, expiresAtUtc);
+        return new RefreshToken(userId, familyId, token, expiresAtUtc, ipAddress, userAgent);
     }
     
     #endregion
@@ -74,7 +85,9 @@ internal sealed class RefreshToken
     public void Revoke()
     {
         if (IsRevoked) return;
+        
         IsRevoked = true;
+        RevokedAtUtc = DateTimeOffset.UtcNow;
     }
     
     public void MarkReplacedBy(Guid newTokenId)

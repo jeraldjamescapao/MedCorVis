@@ -37,6 +37,7 @@ internal static class IdentityModuleServiceCollectionExtensions
         services.AddIdentityJwt(configuration);
         
         services.AddScoped<IAccountService, AccountService>();
+        services.AddScoped<ISessionContext, SessionContext>();
         
         return services;
     }

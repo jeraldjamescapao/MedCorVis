@@ -127,6 +127,15 @@ internal sealed class IdentityDbContext
             entity.Property(x => x.IsRevoked)
                 .IsRequired()
                 .HasDefaultValue(false);
+            
+            entity.Property(x => x.RevokedAtUtc)
+                .HasColumnType("datetimeoffset");
+
+            entity.Property(x => x.IpAddress)
+                .HasMaxLength(RefreshToken.IpAddressMaxLength);
+
+            entity.Property(x => x.UserAgent)
+                .HasMaxLength(RefreshToken.UserAgentMaxLength);
 
             entity.HasOne<ApplicationUser>()
                 .WithMany()

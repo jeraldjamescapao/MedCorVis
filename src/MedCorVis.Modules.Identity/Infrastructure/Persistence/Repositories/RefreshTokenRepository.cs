@@ -31,10 +31,12 @@ internal sealed class RefreshTokenRepository : IRefreshTokenRepository
 
     public async Task RevokeAllForUserAsync(Guid userId, CancellationToken ct = default)
     {
+        var now = DateTimeOffset.UtcNow;
         await _context.RefreshTokens
-            .Where(t => t.UserId == userId)
-            .ExecuteUpdateAsync(u => 
-                u.SetProperty(t => t.IsRevoked, true), cancellationToken: ct);
+            .Where(t => t.UserId == userId && !t.IsRevoked)
+            .ExecuteUpdateAsync(u => u
+                .SetProperty(t => t.IsRevoked, true)
+                .SetProperty(t => t.RevokedAtUtc, now), cancellationToken: ct);
     }
 
     public async Task<int> DeleteExpiredAsync(CancellationToken ct = default)

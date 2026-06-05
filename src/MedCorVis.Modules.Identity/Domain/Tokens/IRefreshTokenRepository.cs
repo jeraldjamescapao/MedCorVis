@@ -16,10 +16,11 @@ internal interface IRefreshTokenRepository
     Task UpdateAsync(RefreshToken token, CancellationToken ct = default);
     
     /// <summary>
-    /// Revokes all refresh tokens for the given user using a bulk UPDATE statement.
+    /// Revokes all active refresh tokens for the given user using a bulk UPDATE statement.
     /// This bypasses EF change tracking and does not call <see cref="RefreshToken.Revoke"/>.
-    /// If <see cref="RefreshToken.Revoke"/> gains side-effect logic in the future (e.g., setting
-    /// a RevokedAt timestamp), this method must be updated to match.
+    /// Both <see cref="RefreshToken.IsRevoked"/> and <see cref="RefreshToken.RevokedAtUtc"/>
+    /// are set directly. If <see cref="RefreshToken.Revoke"/> gains additional side-effect logic
+    /// in the future, this method must be updated to match.
     /// </summary>
     Task RevokeAllForUserAsync(Guid userId, CancellationToken ct = default);
     

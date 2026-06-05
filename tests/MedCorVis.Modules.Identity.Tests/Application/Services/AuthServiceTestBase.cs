@@ -21,6 +21,7 @@ using NSubstitute;
 
 public abstract class AuthServiceTestBase
 {
+    protected readonly ISessionContext SessionContext;
     protected readonly UserManager<ApplicationUser> UserManager;
     internal readonly IJwtTokenService JwtTokenService;
     internal readonly IRefreshTokenRepository RefreshTokenRepository;
@@ -43,6 +44,10 @@ public abstract class AuthServiceTestBase
     
     protected AuthServiceTestBase()
     {
+        SessionContext = Substitute.For<ISessionContext>();
+        SessionContext.IpAddress.Returns("127.0.0.1");
+        SessionContext.UserAgent.Returns("TestAgent/1.0");
+        
         UserManager            = MockUserManager.Create();
         JwtTokenService        = Substitute.For<IJwtTokenService>();
         RefreshTokenRepository = Substitute.For<IRefreshTokenRepository>();
@@ -66,6 +71,7 @@ public abstract class AuthServiceTestBase
             .Returns("raw-refresh-token");
         
         Sut = new AuthService(
+            SessionContext,
             UserManager,
             CurrentCultureService,
             UserCultureCache,
