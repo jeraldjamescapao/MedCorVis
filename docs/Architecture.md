@@ -188,7 +188,8 @@ The deletion workflow follows a request-and-approve pattern:
 
 The module exposes three controllers:
 
-- `AuthController`: registration, login, token refresh, logout, email confirmation. Route: `/auth`.
+- `AuthController`: registration, login, token refresh, logout, email confirmation,
+  password recovery (forgot-password, reset-password), and password change. Route: `/auth`.
 - `AccountConsumerController`: self-service account endpoints for any authenticated user. Route: `/users`.
 - `AccountController`: staff-facing account endpoints for Admin and MedicalSecretary. Route: `/users`.
 
@@ -272,17 +273,26 @@ Structured logging uses Serilog with a Seq sink. All log messages use the
 
 Log event ID ranges by module:
 
-| Range     | Owner                                  |
-|-----------|----------------------------------------|
-| 1000s     | Api (middleware)                       |
-| 2000s     | Identity / AuthService                 |
-| 3001-3016 | Identity / AccountService              |
-| 3017-3018 | Users / UserProfileService             |
-| 4000s     | Localization                           |
-| 5001-5008 | Seeders (RoleSeeder, AdminUserSeeder)  |
-| 6000s     | CodeItems                              |
-| 7000s     | Patients (next)                        |
-| 8000s     | Next available after Patients          |
+| Range     | Owner                                        |
+|-----------|----------------------------------------------|
+| 1000s     | Api (middleware)                             |
+| 2001-2005 | Identity / AuthService / Register            |
+| 2010-2014 | Identity / AuthService / Login               |
+| 2020-2025 | Identity / AuthService / Refresh             |
+| 2030-2032 | Identity / AuthService / Logout              |
+| 2040-2043 | Identity / AuthService / EmailConfirmation   |
+| 2050-2051 | Identity / AuthService / ResendConfirmation  |
+| 2060-2062 | Identity / AuthService / RefreshTokenCleanup |
+| 2070-2071 | Identity / AuthService / ForgotPassword      |
+| 2080-2083 | Identity / AuthService / ResetPassword       |
+| 2090-2092 | Identity / AuthService / ChangePassword      |
+| 3001-3016 | Identity / AccountService                    |
+| 3017-3018 | Users / UserProfileService                   |
+| 4000s     | Localization                                 |
+| 5001-5008 | Seeders (RoleSeeder, AdminUserSeeder)        |
+| 6000s     | CodeItems                                    |
+| 7000s     | Patients (next)                              |
+| 8000s     | Next available after Patients                |
 
 ## Testing
 
