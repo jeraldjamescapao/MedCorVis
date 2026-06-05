@@ -243,4 +243,26 @@ internal static class AuthLogMessages
             "Password reset succeeded for user {UserId}. All sessions revoked.");
 
     #endregion
+    
+    #region ChangePassword
+
+    public static readonly Action<ILogger, Guid, Exception?> ChangePasswordInvalidCredentials =
+        LoggerMessage.Define<Guid>(
+            LogLevel.Warning,
+            new EventId(2090, "ChangePasswordInvalidCredentials"),
+            "Password change failed: invalid current password for user {UserId}.");
+
+    public static readonly Action<ILogger, Guid, Exception?> ChangePasswordFailed =
+        LoggerMessage.Define<Guid>(
+            LogLevel.Error,
+            new EventId(2091, "ChangePasswordFailed"),
+            "Password change failed for user {UserId}: identity returned errors.");
+
+    public static readonly Action<ILogger, Guid, Exception?> ChangePasswordSucceeded =
+        LoggerMessage.Define<Guid>(
+            LogLevel.Information,
+            new EventId(2092, "ChangePasswordSucceeded"),
+            "Password changed successfully for user {UserId}. All sessions revoked.");
+
+    #endregion
 }

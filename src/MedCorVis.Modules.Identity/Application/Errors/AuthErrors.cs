@@ -51,4 +51,7 @@ public static class AuthErrors
 
     public static readonly ResultError PasswordResetFailed =
         new("IDENTITY_AUTH_PASSWORD_RESET_FAILED", "Failed to reset password.");
+    
+    public static readonly ResultError ChangePasswordFailed =
+        new("IDENTITY_AUTH_CHANGE_PASSWORD_FAILED", "Failed to change password.");
 }

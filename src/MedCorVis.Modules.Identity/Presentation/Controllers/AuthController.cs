@@ -130,6 +130,21 @@ public sealed class AuthController : BaseApiController
         return ToActionResult(result);
     }
     
+    [Authorize]
+    [HttpPost("change-password")]
+    public async Task<IActionResult> ChangePasswordAsync(
+        [FromBody] ChangePasswordRequest request, CancellationToken ct)
+    {
+        if (!TryGetCurrentUserId(_currentUserService, out var userId))
+            return ToActionResult(Result<bool>.Unauthorized(AuthErrors.InvalidCredentials));
+        
+        var result = await _authService.ChangePasswordAsync(userId, request, ct);
+        if (result.IsFailure) return ToActionResult(result);
+
+        DeleteRefreshTokenCookie();
+        return ToActionResult(result);
+    }
+    
     #region Helpers
     
     private void AppendRefreshTokenCookie(string rawRefreshToken, DateTimeOffset expiresAt)

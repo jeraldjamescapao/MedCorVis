@@ -157,3 +157,22 @@ Content-Type: {{ContentType}}
 }
 
 ###
+
+# ─────────────────────────────────────────
+# Auth — Change Password
+# Changes the password for the authenticated user.
+# Revokes all active sessions and clears the refresh token cookie on success.
+# Requires: valid Bearer token.
+# Returns: 204 No Content.
+# ─────────────────────────────────────────
+
+POST {{MedCorVis_HostAddress}}/api/v1/auth/change-password
+Content-Type: {{ContentType}}
+Authorization: Bearer {{AccessToken}}
+
+{
+  "currentPassword": "ThePasswordOfAllSeasons1!",
+  "newPassword": "NewPassword456!" 
+}
+
+###

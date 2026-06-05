@@ -447,6 +447,39 @@ internal sealed class AuthService : IAuthService
         return Result<bool>.Success(true);
     }
     
+    public async Task<Result<bool>> ChangePasswordAsync(
+        Guid userId, ChangePasswordRequest request, CancellationToken ct = default)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user is null || !user.IsActive)
+        {
+            AuthLogMessages.ChangePasswordInvalidCredentials(_logger, userId, null);
+            return Result<bool>.Unauthorized(AuthErrors.InvalidCredentials);
+        }
+
+        var result = await _userManager.ChangePasswordAsync(
+            user, request.CurrentPassword, request.NewPassword);
+
+        if (!result.Succeeded)
+        {
+            if (result.Errors.Any(e => e.Code is "PasswordMismatch"))
+            {
+                AuthLogMessages.ChangePasswordInvalidCredentials(_logger, userId, null);
+                return Result<bool>.Unauthorized(AuthErrors.InvalidCredentials);
+            }
+
+            AuthLogMessages.ChangePasswordFailed(_logger, userId, null);
+            return Result<bool>.Internal(AuthErrors.ChangePasswordFailed);
+        }
+
+        await _refreshTokenRepository.RevokeAllForUserAsync(userId, ct);
+        await _refreshTokenRepository.SaveChangesAsync(ct);
+
+        AuthLogMessages.ChangePasswordSucceeded(_logger, userId, null);
+
+        return Result<bool>.Success(true);
+    }
+    
     #endregion
     
     #region Helpers
