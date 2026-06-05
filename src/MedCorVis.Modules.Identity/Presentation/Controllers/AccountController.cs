@@ -33,7 +33,7 @@ public sealed class AccountController : BaseApiController
         return ToActionResult(result);
     }
     
-    [HttpPost("{id:guid}/delete")]
+    [HttpDelete("{id:guid}")]
     public async Task<IActionResult> ExecuteDeletionAsync(Guid id, CancellationToken ct)
     {
         if (!TryGetCurrentUserId(_currentUserService, out var actorId))
