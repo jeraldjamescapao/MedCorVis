@@ -189,7 +189,7 @@ The deletion workflow follows a request-and-approve pattern:
 
 1. User submits a deletion request via `POST /users/me/deletion-request`.
 2. Admin or MedicalSecretary reviews pending requests via `GET /users/deletion-requests`.
-3. Staff executes deletion via `POST /users/{id}`.
+3. Staff executes deletion via `DELETE /users/{id}`.
 4. On execution, PII fields are anonymised in both `Identity.Users` and `Profiles.Users`.
 5. `BirthDate` is retained on the anonymised row for statistical purposes.
 
