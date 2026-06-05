@@ -255,6 +255,15 @@ public sealed class RegisterTests : AuthServiceTestBase
         await Transaction
             .Received(1)
             .CommitAsync(Arg.Any<CancellationToken>());
+        await UserProfileService
+            .Received(1)
+            .CreateProfileAsync(
+                Arg.Any<Guid>(),
+                ValidRequest.FirstName,
+                ValidRequest.LastName,
+                ValidRequest.BirthDate,
+                Arg.Any<string>(),
+                Arg.Any<CancellationToken>());
     }
     
     [Fact]
